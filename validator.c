@@ -44,13 +44,7 @@ int main(int argc, char **argv)
     for (n = 0; n < num_rsp; n++) {
 	 uint16_t myhandle;
 	 ptype = HCI_DM1 | HCI_DM3 | HCI_DM5 | HCI_DH1 | HCI_DH3 | HCI_DH5;
-	 if(hci_create_connection (sock,
-				 &(ii+i)->bdaddr,
-				 ptype,
-				 (ii+i)->clock_offset,
-				 0,
-				 &myhandle,
-				 0) < 0) perror("hci_create_con");
+	 if(hci_create_connection (sock, &(ii+i)->bdaddr, ptype, (ii+i)->clock_offset, 0, &myhandle, 0) < 0) perror("hci_create_con");
 	 if(hci_read_rssi(sock, myhandle, rssiVal, 0) < 0)
 		 rssiVal = -127;
 	 hci_disconnect(sock, myhandle, HCI_OE_USER_ENDED_CONNECTION, 0);
