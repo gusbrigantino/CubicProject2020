@@ -44,10 +44,12 @@ This function updates the balance of a charged account in the database
 int UpdateDataBase();
 /*
 This function is responsible for user interface
+TODO: This is where GUI code will go
 */
 int PrintUserInterface();
 /*
 This function simulates a beacon by randomizing a delay and account number 
+Will not be needed in final project
 */
 int BeaconSimulator(int randWaitTime);
 /*
@@ -83,8 +85,6 @@ class Acct
 
 static int BeaconFuncCallCount;
 
-int acctIndex;                                              //account index in csv file tracker
-
 Acct Account;
 
 
@@ -113,8 +113,6 @@ int ValidationProcess()
         switch(machineState)
         {
             case IDLE_ST:                                   //simulates waiting for a beacon to arrive 
-                
-                acctIndex = 0;                              //reset account index tracker
 
                 beaconAcctNum = BeaconSimulator(waitTime);
 
@@ -183,6 +181,7 @@ int AccountLookUp()
     double acctBalance;
     std::string balance;                                        //vars used to convert balance from string to int and save 
 
+    int acctIndex = 0;                                              //account index in csv file tracker
 
     dataFile.open(DB_FILE_NAME, std::ios::in);                  //open csv file
 
