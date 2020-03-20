@@ -1,3 +1,9 @@
+/*
+    Gus Brigantino
+    Senior Design Spring 2020
+    Cubic Transportation
+*/
+
 #include <iostream>
 #include <time.h>
 #include <fstream>
