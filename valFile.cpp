@@ -1,5 +1,6 @@
 /*
     Gus Brigantino
+    Validator Simulator Module
     Senior Design Spring 2020
     Cubic Transportation
 */
@@ -10,7 +11,6 @@
 static int BeaconFuncCallCount;
 
 Acct Account;
-
 
 int main()
 {
