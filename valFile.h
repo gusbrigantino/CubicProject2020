@@ -86,4 +86,3 @@ class Acct
     bool getBalanceStatus();
     void setBalanceStatus(bool newBalanceStatus);
 };                                                          //Account class used to store patron info from database and beacon
-
