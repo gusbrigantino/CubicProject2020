@@ -53,11 +53,6 @@ TODO: This is where GUI code will go
 */
 int PrintUserInterface();
 /*
-This function simulates a beacon by randomizing a delay and account number 
-Will not be needed in final project
-*/
-int BeaconSimulator(int randWaitTime);
-/*
 This function is a simple software timer used to clock the state machine
 */
 int Timer(int milliseconds);
