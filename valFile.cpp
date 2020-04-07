@@ -239,8 +239,7 @@ int UIClient()
     int newSocket = 0;
 	struct sockaddr_in serv_addr; 
 
-	const char *data = "Acct info"; 
-
+	const char *data = "ACCT INFO HERE";
 
 	if((newSocket = socket(AF_INET, SOCK_STREAM, IP_SOCKET_PRTCL)) < 0) 					//Creating new socket
 	{ 
@@ -264,7 +263,7 @@ int UIClient()
 		return -1; 
 	} 
 
-	send(newSocket, data, sizeof(data), IP_SOCKET_PRTCL);									//send message to server
+	send(newSocket, data, (strlen(data) * sizeof(data)), IP_SOCKET_PRTCL);									//send message to server
 
 	return 0; 
 }

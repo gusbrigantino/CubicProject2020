@@ -8,11 +8,13 @@
 
 #define PORT_NUMBER         8080
 
-#define MAX_QUEUE_LEN       3
+#define MAX_QUEUE_LEN       3           
 
 #define MS_PER_SEC          1000
 
-#define GUI_DELAY           200
+#define GUI_DELAY           200         //200ms
+
+#define BUFFER_SIZE         1024        //2^11
 
 
 int Timer(int milliseconds);
@@ -27,7 +29,7 @@ int main()
   
 	int opt = 1; 
 	int addrlen = sizeof(address); 
-	char buffer[1024] = {0}; 
+	char buffer[BUFFER_SIZE] = {0}; 
     
     
     if((guiSocket = socket(AF_INET, SOCK_STREAM, IP_SOCKET_PRTCL)) == 0)                                    // Creating socket file descriptor
@@ -56,7 +58,6 @@ int main()
 
     while(true)
     {
-    
         if(listen(guiSocket, MAX_QUEUE_LEN) < 0)                                                            //Listening for client
         { 
             std::cout << "listen failed" << std::endl;  
@@ -69,10 +70,8 @@ int main()
             exit(EXIT_FAILURE); 
         } 
 
-        recv(new_socket, buffer, sizeof(buffer), IP_SOCKET_PRTCL);                                          //recieves message from client 
+        recv(new_socket, buffer, BUFFER_SIZE, IP_SOCKET_PRTCL);                                          //recieves message from client 
         std::cout << buffer << std::endl; 
-
-        Timer(GUI_DELAY);
     }
 
     return 0;

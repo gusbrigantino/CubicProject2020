@@ -10,7 +10,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-
+#include <cstring>
 #include <sys/socket.h> 
 #include <arpa/inet.h> 
 
@@ -40,7 +40,7 @@
 
 #define PORT_NUMBER         8080
 
-#define SERVER_ADDR         "192.168.1.31"
+#define SERVER_ADDR         "127.0.0.1"         //"192.168.1.31"        //change this to desire IP address of server
 
 
 /*
