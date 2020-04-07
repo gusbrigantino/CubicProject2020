@@ -2,12 +2,21 @@
 #include <iostream>
 #include <sys/socket.h> 
 #include <netinet/in.h> 
+#include <time.h>
 
 #define IP_SOCKET_PRTCL     0
 
 #define PORT_NUMBER         8080
 
 #define MAX_QUEUE_LEN       3
+
+#define MS_PER_SEC          1000
+
+#define GUI_DELAY           200
+
+
+int Timer(int milliseconds);
+
 
 
 int main() 
@@ -63,7 +72,29 @@ int main()
         recv(new_socket, buffer, sizeof(buffer), IP_SOCKET_PRTCL);                                          //recieves message from client 
         std::cout << buffer << std::endl; 
 
+        Timer(GUI_DELAY);
     }
 
     return 0;
 } 
+
+
+
+int Timer(int milliseconds)
+{
+    clock_t startTime = clock(); //Start timer
+
+    double millisecondsPassed;
+    double millisecondsToDelay = milliseconds;
+
+    bool timerFlag = true;
+    while(timerFlag)
+    {
+        millisecondsPassed = (clock() - startTime) / MS_PER_SEC;
+        if(millisecondsPassed >= millisecondsToDelay)
+        {
+            timerFlag = false;
+        }
+    }
+    return 0;
+}

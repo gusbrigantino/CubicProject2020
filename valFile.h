@@ -40,6 +40,8 @@
 
 #define PORT_NUMBER         8080
 
+#define SERVER_ADDR         "192.168.1.31"
+
 
 /*
 This function contains the state machine that simulates the validator
