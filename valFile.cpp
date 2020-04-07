@@ -74,7 +74,8 @@ int ValidationProcess()
 
             case UI_ST:                                     //simple ui to output line for now     
 
-                PrintUserInterface();
+                //PrintUserInterface();
+                UIClient();
 
                 machineState = IDLE_ST;
                 break;
@@ -212,6 +213,7 @@ int UpdateDataBase()
 
 
 
+
 int BeaconSimulator(int randWaitTime)
 {
     if(BeaconFuncCallCount++ == randWaitTime)               //BeaconFuncCallCount is a global static var used to count how many times 
@@ -227,6 +229,44 @@ int BeaconSimulator(int randWaitTime)
         return -1;
     }
 
+}
+
+
+
+
+int UIClient()
+{
+    int newSocket = 0;
+	struct sockaddr_in serv_addr; 
+
+	const char *data = "Acct info"; 
+
+
+	if((newSocket = socket(AF_INET, SOCK_STREAM, IP_SOCKET_PRTCL)) < 0) 					//Creating new socket
+	{ 
+		std::cout << "Socket creation error" << std::endl; 
+		return -1; 
+	} 
+
+	serv_addr.sin_family = AF_INET; 
+	serv_addr.sin_port = htons(PORT_NUMBER); 
+	
+	 
+	if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) 							//Convert IPv4 and IPv6 addresses from text to binary form
+	{ 
+        std::cout << "Invalid address/ Address not supported" << std::endl;
+		return -1; 
+	} 
+
+	if(connect(newSocket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) 			//Connect to server
+	{ 
+		std::cout << "Communincation Failed" << std::endl;
+		return -1; 
+	} 
+
+	send(newSocket, data, sizeof(data), IP_SOCKET_PRTCL);									//send message to server
+
+	return 0; 
 }
 
 

@@ -11,6 +11,10 @@
 #include <sstream>
 #include <vector>
 
+#include <sys/socket.h> 
+#include <arpa/inet.h> 
+
+
 #define IDLE_ST             0
 #define LOOKUP_ST           1
 #define DB_EDIT_ST          2
@@ -31,6 +35,10 @@
 #define TICKET_PRICE        2.5                 //$2.50 for a ticket
 
 #define DELIMITER           ','                 //used for reading and writing lines from and to csv files
+
+#define IP_SOCKET_PRTCL     0
+
+#define PORT_NUMBER         8080
 
 
 /*
@@ -56,6 +64,8 @@ This function simulates a beacon by randomizing a delay and account number
 Will not be needed in final project
 */
 int BeaconSimulator(int randWaitTime);
+//TEST FUNC
+int UIClient();
 /*
 This function is a simple software timer used to clock the state machine
 */
