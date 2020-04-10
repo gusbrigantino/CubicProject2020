@@ -284,6 +284,17 @@ int Timer(int milliseconds)
 
 
 //Acct Class Functions
+Acct::Acct()
+{
+    name = "";
+    number = 0;
+    balance = 0.0;
+    index = 0;
+    foundStatus = false;
+    balanceStatus = false;
+}
+
+
 std::string Acct::getName()
 {
     return name;

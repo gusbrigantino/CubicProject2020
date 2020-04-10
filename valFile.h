@@ -74,15 +74,7 @@ class Acct
 
     public:
 
-    Acct()
-    {
-        name = "";
-        number = 0;
-        balance = 0.0;
-        index = 0;
-        foundStatus = false;
-        balanceStatus = false;
-    }
+    Acct();
 
     std::string getName();
     void setName(std::string newName);
