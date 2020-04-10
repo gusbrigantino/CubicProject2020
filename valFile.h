@@ -61,14 +61,17 @@ int Timer(int milliseconds);
 class Acct
 {
     private:
-    std::string name = "";                                  //name of account holder
-    int number = 0;                                         //account number
-    double balance = 0.0;                                   //current account balance
-    int index = 0;                                          //where account is located in csv file based on rows
-    bool foundStatus = false;                               //if the account was sucessfully found in the database
-    bool balanceStatus = false;                             //if the current balance contains enough to purcahse a ticket
+    std::string name;                               //name of account holder
+    int number;                                     //account number
+    double balance;                                 //current account balance
+    int index;                                      //where account is located in csv file based on rows
+    bool foundStatus;                               //if the account was sucessfully found in the database
+    bool balanceStatus;                             //if the current balance contains enough to purcahse a ticket
 
     public:
+
+    Acct();
+
     std::string getName();
     void setName(std::string newName);
     int getNumber();

@@ -213,10 +213,12 @@ int UpdateDataBase()
 
 int PrintUserInterface()
 {
+    //if the account number given by the beacon is not in the csv file
     if(!Account.getFoundStatus())
     {
         std::cout << "Your account could not be found." << std::endl << std::endl;
     }
+    //if the account number given by the beacon is in the csv file but lacks the funds to purchase a ticket
     else if(!Account.getBalanceStatus())
     {
         std::cout << "Welcome " << Account.getName() << std::endl;
@@ -224,6 +226,7 @@ int PrintUserInterface()
         std::cout << "Your current balance is $" << Account.getBalance() << std::endl;
         std::cout << "You need $" << (TICKET_PRICE - Account.getBalance()) << " more to purchase a ticket" << std::endl << std::endl;
     }
+    //if the account number given by the beacon is found and has the funds to purchase a ticket 
     else
     {
         std::cout << "Welcome " << Account.getName() << std::endl;
@@ -260,6 +263,17 @@ int Timer(int milliseconds)
 
 
 //Acct Class Functions
+Acct::Acct()
+{
+    name = "";
+    number = 0;
+    balance = 0.0;
+    index = 0;
+    foundStatus = false;
+    balanceStatus = false;
+}
+
+
 std::string Acct::getName()
 {
     return name;
