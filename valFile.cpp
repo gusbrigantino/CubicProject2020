@@ -98,7 +98,7 @@ int AccountLookUp()
     double acctBalance;
     std::string balance;                                        //vars used to convert balance from string to int and save 
 
-    int acctIndex = 0;                                              //account index in csv file tracker
+    int acctIndex = 0;                                          //account index in csv file tracker
 
     dataFile.open(DB_FILE_NAME, std::ios::in);                  //open csv file
 
@@ -256,7 +256,7 @@ int UIClient()
 
 int Timer(int milliseconds)
 {
-    clock_t startTime = clock(); //Start timer
+    clock_t startTime = clock();
 
     int millisecondsPassed;
     int millisecondsToDelay = milliseconds;

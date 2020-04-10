@@ -41,7 +41,7 @@
 
 #define PORT_NUMBER         8080
 
-#define SERVER_ADDR         "127.0.0.1"         //"192.168.1.31"        //change this to desire IP address of server
+#define SERVER_ADDR         "127.0.0.1"         //change this to desire IP address of server
 
 #define BUFFER_SIZE         1024
 
@@ -95,4 +95,4 @@ class Acct
     void setFoundStatus(bool newFoundStatus);
     bool getBalanceStatus();
     void setBalanceStatus(bool newBalanceStatus);
-};                                                          //Account class used to store patron info from database and beacon
+};                                                  //Account class used to store patron info from database and beacon

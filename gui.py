@@ -5,7 +5,7 @@ import time
 
 #const vars 
 portNumber = 8080	
-IPAdress = '127.0.0.1'
+IPAddress = '127.0.0.1'
 bufferSize = 1024
 
 nameIndex = 0
@@ -22,7 +22,7 @@ guiScreenDelay = 3000                                                       #3 s
 
 def main():
     guiSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)           #create socket
-    serverAddress = (IPAdress, portNumber)                                  #create socket info with IP address and port #
+    serverAddress = (IPAddress, portNumber)                                  #create socket info with IP address and port #
     guiSocket.bind(serverAddress)                                           #bind
 
     guiSocket.listen(16)                                                    #listen TODO: unsure what argument does/is
@@ -41,7 +41,7 @@ def main():
 
             cleanBytes = rawBytes.split(dataEnd)                            #find the null terminator that ends the desired data in the buffer
 
-            strData = cleanBytes[dataIndex].decode("utf-8")                 #deconde to string type and keep whatever is in from of the null terminator
+            strData = cleanBytes[dataIndex].decode("utf-8")                 #deconde to string type and keep whatever is in front of the null terminator
             
             data = strData.split(delimiter)                                 #split data into vars
 
