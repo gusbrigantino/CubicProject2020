@@ -72,7 +72,6 @@ int ValidationProcess()
 
             case UI_ST:                                     //simple ui to output line for now     
 
-                //PrintUserInterface();
                 UIClient();
 
                 machineState = IDLE_ST;
@@ -259,8 +258,8 @@ int Timer(int milliseconds)
 {
     clock_t startTime = clock(); //Start timer
 
-    double millisecondsPassed;
-    double millisecondsToDelay = milliseconds;
+    int millisecondsPassed;
+    int millisecondsToDelay = milliseconds;
 
     bool timerFlag = true;
     while(timerFlag)
