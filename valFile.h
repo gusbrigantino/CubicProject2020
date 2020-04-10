@@ -14,6 +14,7 @@
 #include <sys/socket.h> 
 #include <arpa/inet.h> 
 
+#include "beacon.h"
 
 #define IDLE_ST             0
 #define LOOKUP_ST           1
@@ -59,11 +60,6 @@ This function updates the balance of a charged account in the database
 */
 int UpdateDataBase();
 /*
-This function simulates a beacon by randomizing a delay and account number 
-Will not be needed in final project
-*/
-int BeaconSimulator(int randWaitTime);
-/*
 This function handles the UI client that feeds data to socket for GUI
 */
 int UIClient();
@@ -76,14 +72,17 @@ int Timer(int milliseconds);
 class Acct
 {
     private:
-    std::string name = "";                                  //name of account holder
-    int number = 0;                                         //account number
-    double balance = 0.0;                                   //current account balance
-    int index = 0;                                          //where account is located in csv file based on rows
-    bool foundStatus = false;                               //if the account was sucessfully found in the database
-    bool balanceStatus = false;                             //if the current balance contains enough to purcahse a ticket
+    std::string name;                               //name of account holder
+    int number;                                     //account number
+    double balance;                                 //current account balance
+    int index;                                      //where account is located in csv file based on rows
+    bool foundStatus;                               //if the account was sucessfully found in the database
+    bool balanceStatus;                             //if the current balance contains enough to purcahse a ticket
 
     public:
+
+    Acct();
+
     std::string getName();
     void setName(std::string newName);
     int getNumber();
