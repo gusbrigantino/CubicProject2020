@@ -42,6 +42,8 @@
 
 #define SERVER_ADDR         "127.0.0.1"         //"192.168.1.31"        //change this to desire IP address of server
 
+#define BUFFER_SIZE         1024
+
 
 /*
 This function contains the state machine that simulates the validator
@@ -57,16 +59,13 @@ This function updates the balance of a charged account in the database
 */
 int UpdateDataBase();
 /*
-This function is responsible for user interface
-TODO: This is where GUI code will go
-*/
-int PrintUserInterface();
-/*
 This function simulates a beacon by randomizing a delay and account number 
 Will not be needed in final project
 */
 int BeaconSimulator(int randWaitTime);
-//TEST FUNC
+/*
+This function handles the UI client that feeds data to socket for GUI
+*/
 int UIClient();
 /*
 This function is a simple software timer used to clock the state machine

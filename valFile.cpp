@@ -237,66 +237,43 @@ int BeaconSimulator(int randWaitTime)
 int UIClient()
 {
     int newSocket = 0;
-	struct sockaddr_in serv_addr; 
+	struct sockaddr_in serverAddress; 
 
-	const char *data = "ACCT INFO HERE";
-
-	if((newSocket = socket(AF_INET, SOCK_STREAM, IP_SOCKET_PRTCL)) < 0) 					//Creating new socket
+	if((newSocket = socket(AF_INET, SOCK_STREAM, IP_SOCKET_PRTCL)) < 0)                     //Create new socket
 	{ 
 		std::cout << "Socket creation error" << std::endl; 
 		return -1; 
 	} 
 
-	serv_addr.sin_family = AF_INET; 
-	serv_addr.sin_port = htons(PORT_NUMBER); 
+	serverAddress.sin_family = AF_INET; 
+	serverAddress.sin_port = htons(PORT_NUMBER); 
 	
 	 
-	if(inet_pton(AF_INET, SERVER_ADDR, &serv_addr.sin_addr) <= 0) 							//Convert IPv4 and IPv6 addresses from text to binary form
+	if(inet_pton(AF_INET, SERVER_ADDR, &serverAddress.sin_addr) <= 0) 					    //Convert IPv4 and IPv6 addresses from text to binary form
 	{ 
         std::cout << "Invalid address/ Address not supported" << std::endl;
 		return -1; 
 	} 
 
-	if(connect(newSocket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) 			//Connect to server
+	if(connect(newSocket, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) < 0)    //Connect to server
 	{ 
 		std::cout << "Communincation Failed" << std::endl;
 		return -1; 
 	} 
 
-	send(newSocket, data, (strlen(data) * sizeof(data)), IP_SOCKET_PRTCL);									//send message to server
+    std::string strData = Account.getName() + DELIMITER
+	+ std::to_string(Account.getBalance()) + DELIMITER 
+	+ (Account.getFoundStatus() ? "1" : "0") + DELIMITER 
+	+ (Account.getBalanceStatus() ? "1" : "0") + '\0';
+
+    const char *data = strData.c_str();
+
+	send(newSocket, data, BUFFER_SIZE, IP_SOCKET_PRTCL);									//send message to server
 
 	return 0; 
 }
 
 
-
-
-int PrintUserInterface()
-{
-    //if the account number given by the beacon is not in the csv file
-    if(!Account.getFoundStatus())
-    {
-        std::cout << "Your account could not be found." << std::endl << std::endl;
-    }
-    //if the account number given by the beacon is in the csv file but lacks the funds to purchase a ticket
-    else if(!Account.getBalanceStatus())
-    {
-        std::cout << "Welcome " << Account.getName() << std::endl;
-        std::cout << "You do not have enough funds to purchase a ticket." << std::endl;
-        std::cout << "Your current balance is $" << Account.getBalance() << std::endl;
-        std::cout << "You need $" << (TICKET_PRICE - Account.getBalance()) << " more to purchase a ticket" << std::endl << std::endl;
-    }
-    //if the account number given by the beacon is found and has the funds to purchase a ticket 
-    else
-    {
-        std::cout << "Welcome " << Account.getName() << std::endl;
-        std::cout << "Your new balance is $" << Account.getBalance() << std::endl;
-        std::cout << "Enjoy your trip!" << std::endl << std::endl;
-    }
-    
-
-    return 0;
-}
 
 
 
