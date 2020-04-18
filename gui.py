@@ -15,6 +15,8 @@ balanceIndex = 1
 foundStatusIndex = 2
 balanceStatusIndex = 3
 
+ticketPrice = 2.5
+
 dataIndex = 0
 
 delimiter = ','
@@ -25,10 +27,10 @@ guiScreenDelay = 3000                                                       #3 s
 def main():
 
 #   SOCKET INIT
-#    guiSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)           #create socket
-#    serverAddress = (IPAddress, portNumber)                                 #create socket info with IP address and port #
-#    guiSocket.bind(serverAddress)                                           #bind
-#    guiSocket.listen(16)                                                    #listen TODO: unsure what argument does/is
+    guiSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)           #create socket
+    serverAddress = (IPAddress, portNumber)                                 #create socket info with IP address and port #
+    guiSocket.bind(serverAddress)                                           #bind
+    guiSocket.listen(16)                                                    #listen TODO: unsure what argument does/is
 
 
 #   TKINTER INIT
@@ -49,7 +51,12 @@ def main():
 #   CANVAS IMG
     cubicImg = tkr.PhotoImage(file='cubicImg.png')
     canvasCubicImg = canvas.create_image((screenWidth - cubicImg.width()), (screenHeight - cubicImg.height()), image=cubicImg, anchor='nw')
-    
+
+#   CANVAS TEXT
+    canvasTitleText = canvas.create_text((screenWidth / 8), 10, fill = "darkblue", font = "Times 100", text = "San Diego Metro Station", anchor='nw')
+    canvasAcctInfoRect = canvas.create_rectangle((screenWidth / 2), (screenHeight / 4), (screenWidth - 10), (screenHeight - cubicImg.height()), outline = "darkblue", width = 7)
+    canvasAcctInfoText = canvas.create_text((screenWidth / 2) + 50, 230, fill = "darkblue", font = "Times 60", text = "Account Information:", anchor='nw')
+
 #   TKINTER UPDATE
     tk.update_idletasks()
     tk.update()
@@ -59,24 +66,26 @@ def main():
         tk.update()
         Timer(500)
 
-#        connection, clientAddress = guiSocket.accept()	                    #connection made with client (val)
+        connection, clientAddress = guiSocket.accept()	                    #connection made with client (val)
         
         try:
             #Incoming data in order: "<Acct Name>, <Acct Balance>, <Acct Found Status>, <Acct Balance Status>"
             #-----------------------------------------------------------------------------------------------#
 
-#            rawBytes = connection.recv(bufferSize)                          #get all of the incoming data (size of buffer)
-#            print(type(rawBytes))
-#            cleanBytes = rawBytes.split(dataEnd)                            #find the null terminator that ends the desired data in the buffer
+            rawBytes = connection.recv(bufferSize)                          #get all of the incoming data (size of buffer)
 
-#            strData = cleanBytes[dataIndex].decode("utf-8")                 #decode the string type and keep whatever is in front of the null terminator
+            cleanBytes = rawBytes.split(dataEnd)                            #find the null terminator that ends the desired data in the buffer
+
+            strData = cleanBytes[dataIndex].decode("utf-8")                 #decode the string type and keep whatever is in front of the null terminator
             
-            strData = ["Venkat,34.0,1,1", "Venkat,34.0,0,1", "Venkat,34.0,1,0", "Venkat,34.0,1,1"]
+            data = strData.split(delimiter)
 
-            data = strData[i].split(delimiter)                                 #split data into vars
-            i = i + 1
-            if(i >= 4):
-                i = 0
+#            strData = ["Venkat,34.0,1,1", "Venkat,34.0,0,1", "Venkat,34.0,1,0", "Venkat,34.0,1,1"]
+
+#            data = strData[i].split(delimiter)                                 #split data into vars
+#            i = i + 1
+#            if(i >= 4):
+#                i = 0
                                                                             #set new vars
             acctName = data[nameIndex]
             acctBalance = data[balanceIndex]
@@ -90,7 +99,14 @@ def main():
 
                 canvasInvalidImg = canvas.create_image((invalidImg.width() / 4), 
                     (screenHeight - (invalidImg.height() + (invalidImg.height() / 4))), 
-                    image=invalidImg, anchor='nw') 
+                    image=invalidImg, anchor = 'nw') 
+
+                canvasNotFoundText = canvas.create_text((screenWidth / 2) + 90, 330, 
+                    fill = "black", font = "Times 40", text = "Your account was not found", anchor = 'nw')
+
+                canvasDeniedText = canvas.create_text((invalidImg.width() / 4) + 30, 300, 
+                    fill = "red", font = "Times 40", text = "ACCESS DENIED", anchor = 'nw')
+                
 
             elif(not acctBalanceStatus):
                 print("NO BALANCE")
@@ -100,6 +116,14 @@ def main():
                     (screenHeight - (invalidImg.height() + (invalidImg.height() / 4))), 
                     image=invalidImg, anchor='nw') 
 
+                canvasNoBalanceText = canvas.create_text((screenWidth / 2) + 90, 330, 
+                    fill = "black", font = "Times 40", text = "Welcome " + acctName + ".\nYou have $" 
+                    + acctBalance + " in your account.\nYou need $" + str(ticketPrice - float(acctBalance)) 
+                    + "to purchase a ticket.", anchor = 'nw')
+
+                canvasDeniedText = canvas.create_text((invalidImg.width() / 4) + 30, 300, 
+                    fill = "red", font = "Times 40", text = "ACCESS DENIED", anchor = 'nw')
+
             else:
                 print("ACCEPTED")
                 invalidImg = tkr.PhotoImage(file='check.png')
@@ -108,16 +132,31 @@ def main():
                     (screenHeight - (invalidImg.height() + (invalidImg.height() / 4))), 
                     image=invalidImg, anchor='nw') 
 
+                canvasWelcomeText = canvas.create_text((screenWidth / 2) + 90, 330, 
+                    fill = "black", font = "Times 40", text = "Welcome " + acctName + ".\nYour new balance is $" 
+                    + acctBalance + ".\nEnjoy your trip.", anchor = 'nw')
+
+                canvasAcceptedText = canvas.create_text((invalidImg.width() / 4) + 30, 300, 
+                    fill = "green", font = "Times 40", text = "ACCESS GRANTED", anchor = 'nw')
+
 
             tk.update_idletasks()
             tk.update()
             Timer(guiScreenDelay)
             
 
-            if(not acctFoundStatus or not acctBalanceStatus):
+            if(not acctFoundStatus):
                 canvas.delete(canvasInvalidImg)
+                canvas.delete(canvasNotFoundText)
+                canvas.delete(canvasDeniedText)
+            elif(not acctBalanceStatus):
+                canvas.delete(canvasInvalidImg)
+                canvas.delete(canvasNoBalanceText)
+                canvas.delete(canvasDeniedText)
             else:
                 canvas.delete(canvasValidImg)
+                canvas.delete(canvasWelcomeText)
+                canvas.delete(canvasAcceptedText)
 
             #delays to keep screen displayed
             #will catch up if a new beacon arrives will still displaying 
@@ -128,8 +167,7 @@ def main():
             
 
         finally:
-            print("close")
-#            connection.close()                                              #close connection
+            connection.close()                                              #close connection
 
 
 def Timer(milliseconds):
