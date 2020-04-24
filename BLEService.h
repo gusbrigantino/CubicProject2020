@@ -4,19 +4,15 @@
     Senior Design Spring 2020
     Cubic Transportation
 */
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
 #include <sys/socket.h>
 #include <string.h>
 #include <iostream>
 #include <vector>
 #include <sstream>
+
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/hci.h>
 #include <bluetooth/hci_lib.h>
-
-using namespace std;
 
 //Function to reset ble services
 void BLEReset();
@@ -31,4 +27,4 @@ string GetStdoutFromCommand(string cmd);
 string getBLEAddr();
 
 //previous main function
-int BLEService();
+string BLEService();

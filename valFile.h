@@ -12,7 +12,7 @@
 #include <vector>
 #include "BLEService.h"
 
-#define IDLE_ST             0
+#define BLE_ST              0
 #define LOOKUP_ST           1
 #define DB_EDIT_ST          2
 #define UI_ST               3
@@ -62,7 +62,7 @@ class Acct
 {
     private:
     std::string name;                               //name of account holder
-    int number;                                     //account number
+    std::string number;                                     //account number
     double balance;                                 //current account balance
     int index;                                      //where account is located in csv file based on rows
     bool foundStatus;                               //if the account was sucessfully found in the database
@@ -74,8 +74,8 @@ class Acct
 
     std::string getName();
     void setName(std::string newName);
-    int getNumber();
-    void setNumber(int newNumber);
+    std::string getNumber();
+    void setNumber(std::string newNumber);
     double getBalance();
     void setBalance(double newBalance);
     int getIndex();

@@ -19,34 +19,27 @@ int main()
 
 int ValidationProcess()
 {           
-    std::sting beaconAcctNum;                                      //account number from beacon holder
+    std::string beaconAcctNum;                                      //account number from beacon holder
 
     int waitTime = rand() % BEACON_WAIT_TIME;
 
-    int machineState = IDLE_ST;                             //init state var of the state machine
+    int machineState = BLE_ST;                             //init state var of the state machine
 
     while(true)
     {                                    
         switch(machineState)
         {
-            case IDLE_ST:                                   //simulates waiting for a beacon to arrive 
+            case BLE_ST:                                   //simulates waiting for a beacon to arrive 
 
                 beaconAcctNum = BLEService();
                 std::cout << beaconAcctNum << std::endl;
 
-                if(beaconAcctNum == -1)                     //beacon not yet found continue to idle
-                {
-                    machineState = IDLE_ST;
-                }
-                else
-                {
-                    
-                    Account.setNumber(beaconAcctNum);       //random account number 0-10 
-                                                            //TODO: make number a 32 bit int
-                    waitTime = rand() % BEACON_WAIT_TIME;
+                Account.setNumber(beaconAcctNum);       //random account number 0-10 
+                                                        //TODO: make number a 32 bit int
+                waitTime = rand() % BEACON_WAIT_TIME;
 
-                    machineState = LOOKUP_ST;              
-                }
+                machineState = LOOKUP_ST;              
+                
                 break;
 
 
@@ -75,7 +68,7 @@ int ValidationProcess()
 
                 PrintUserInterface();
 
-                machineState = IDLE_ST;
+                machineState = BLE_ST;
                 break;
         }
         Timer(ST_MACH_DELAY);                               //clocks the state machine to run on an interval
@@ -285,12 +278,12 @@ void Acct::setName(std::string newName)
     name = newName;
 }
 
-int Acct::getNumber()
+std::string Acct::getNumber()
 {
     return number;
 }
 
-void Acct::setNumber(int newNumber)
+void Acct::setNumber(std::string newNumber)
 {
     number = newNumber;
 }

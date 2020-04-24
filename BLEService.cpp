@@ -1,9 +1,8 @@
 #include "BLEService.h"
 
-using namespace std;
 
-vector<string> foundAddresses;
-vector<string> approvedAddr;
+std::vector<std::string> foundAddresses;
+std::vector<std::string> approvedAddr;
 
 void BLEReset()
 {
@@ -13,17 +12,17 @@ void BLEReset()
 
 //parses the terminal output by newline char first
 //then parses those lines by space to separate the name and addr
-void parseToVector(string terminalOutput) 
+void parseToVector(std::string terminalOutput) 
 {
-    stringstream ss(terminalOutput);
-    string to;
+    std::stringstream ss(terminalOutput);
+    std::string to;
 
     if(!terminalOutput.empty())
     {
         while(getline(ss,to,'\n'))
         {
-           stringstream to_ss(to);
-           string finalAddress;
+           std::stringstream to_ss(to);
+           std:;string finalAddress;
 
            if(!to.empty())
            {
@@ -42,7 +41,7 @@ void parseToVector(string terminalOutput)
 string GetStdoutFromCommand(string cmd) 
 {
 
-    string data;
+    std::string data;
     FILE * stream;
     const int max_buffer = 256;
     char buffer[max_buffer];
@@ -68,23 +67,23 @@ string GetStdoutFromCommand(string cmd)
 }
 
 //TODO: Replace string with vector<string> of all accetable addr
-string desiredAddr = "04:91:62:97:8B:38";
+std::string desiredAddr = "04:91:62:97:8B:38";
 
-string getBLEAddr()
+std::string getBLEAddr()
 {
     //if(approvedAddr.size() > 0)
     return approvedAddr[0];
 
 }
 
-string BLEService()
+std::string BLEService()
 {
-    string connectCommand = "sudo gatttool -b ";
+    std::string connectCommand = "sudo gatttool -b ";
     //string connectCommand = "connect ";
     //const char *command;
     //const char *connect = "connect";
 
-    string cmnd = GetStdoutFromCommand("sudo timeout -s INT 5s hcitool lescan");
+    std::string cmnd = GetStdoutFromCommand("sudo timeout -s INT 5s hcitool lescan");
     
     parseToVector(cmnd);
 
