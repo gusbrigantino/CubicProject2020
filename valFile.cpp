@@ -19,7 +19,7 @@ int main()
 
 int ValidationProcess()
 {           
-    int beaconAcctNum;                                      //account number from beacon holder
+    std::sting beaconAcctNum;                                      //account number from beacon holder
 
     int waitTime = rand() % BEACON_WAIT_TIME;
 
@@ -31,7 +31,8 @@ int ValidationProcess()
         {
             case IDLE_ST:                                   //simulates waiting for a beacon to arrive 
 
-                beaconAcctNum = BeaconSimulator(waitTime);
+                beaconAcctNum = BLEService();
+                std::cout << beaconAcctNum << std::endl;
 
                 if(beaconAcctNum == -1)                     //beacon not yet found continue to idle
                 {

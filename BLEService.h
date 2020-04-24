@@ -29,3 +29,6 @@ string GetStdoutFromCommand(string cmd);
 
 //Get the found BLE address only if address is valid
 string getBLEAddr();
+
+//previous main function
+int BLEService()
