@@ -22,7 +22,7 @@ void parseToVector(std::string terminalOutput)
         while(getline(ss,to,'\n'))
         {
            std::stringstream to_ss(to);
-           std:;string finalAddress;
+           std::string finalAddress;
 
            if(!to.empty())
            {
@@ -38,7 +38,7 @@ void parseToVector(std::string terminalOutput)
     }
 }
 
-string GetStdoutFromCommand(string cmd) 
+std::string GetStdoutFromCommand(std::string cmd) 
 {
 
     std::string data;

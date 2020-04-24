@@ -18,13 +18,13 @@
 void BLEReset();
 
 //Parse param "terminalOutput" to a vector as Bluetooth addresses only
-void parseToVector(string terminalOutput);
+void parseToVector(std::string terminalOutput);
 
 //Get terminal output resulting from param "cmd"
-string GetStdoutFromCommand(string cmd);
+std::string GetStdoutFromCommand(std::string cmd);
 
 //Get the found BLE address only if address is valid
-string getBLEAddr();
+std::string getBLEAddr();
 
 //previous main function
-string BLEService();
+std::string BLEService();
