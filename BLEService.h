@@ -31,4 +31,4 @@ string GetStdoutFromCommand(string cmd);
 string getBLEAddr();
 
 //previous main function
-int BLEService()
+int BLEService();

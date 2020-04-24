@@ -1,4 +1,3 @@
-
 #include "BLEService.h"
 
 using namespace std;
@@ -78,18 +77,18 @@ string getBLEAddr()
 
 }
 
-int BLEService()
+string BLEService()
 {
     string connectCommand = "sudo gatttool -b ";
     //string connectCommand = "connect ";
-    const char *command;
-    const char *connect = "connect";
+    //const char *command;
+    //const char *connect = "connect";
 
     string cmnd = GetStdoutFromCommand("sudo timeout -s INT 5s hcitool lescan");
     
     parseToVector(cmnd);
 
-    for(int i = 0; i < foundAddresses.size(); i++)
+    for(int i = 0; i < (int)foundAddresses.size(); i++)
     {
         if(desiredAddr.compare(foundAddresses[i]) == 0)
         {
