@@ -10,7 +10,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include "beacon.h"
+#include "BLEService.h"
 
 #define IDLE_ST             0
 #define LOOKUP_ST           1

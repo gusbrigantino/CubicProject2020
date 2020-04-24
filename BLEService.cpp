@@ -52,7 +52,7 @@ string GetStdoutFromCommand(string cmd) {
     }
 
 //TODO: Replace string with vector<string> of all accetable addr
-string desiredAddr = "C9:0E:DB:EA:12:02";
+string desiredAddr = "04:91:62:97:8B:38";
 
 string getBLEAddr(){
     //if(approvedAddr.size() > 0)
