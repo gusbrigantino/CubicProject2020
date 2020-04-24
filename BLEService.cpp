@@ -1,21 +1,11 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <string.h>
-#include <iostream>
-#include <vector>
-#include <sstream>
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/hci.h>
-#include <bluetooth/hci_lib.h>
 
-//#include "BLEDevices.h"
+#include "BLEService.h"
 
 
 using namespace std;
 
 vector<string> foundAddresses;
+vector<string> approvedAddr;
 
 void BLEReset(){
     system("sudo hciconfig hci0 down");
@@ -61,9 +51,18 @@ string GetStdoutFromCommand(string cmd) {
     return data;
     }
 
+//TODO: Replace string with vector<string> of all accetable addr
+string desiredAddr = "C9:0E:DB:EA:12:02";
+
+string getBLEAddr(){
+    //if(approvedAddr.size() > 0)
+    return approvedAddr[0];
+
+}
+
 int main (){
-    string desiredAddr = "C9:0E:DB:EA:12:02";
     string connectCommand = "sudo gatttool -b ";
+    //string connectCommand = "connect ";
     const char *command;
     const char *connect = "connect";
 
@@ -73,9 +72,17 @@ int main (){
 
     for(int i = 0; i < foundAddresses.size(); i++){
         if(desiredAddr.compare(foundAddresses[i]) == 0){
-            connectCommand += foundAddresses[i] + " -I";
+            approvedAddr.push_back(desiredAddr);
+            connectCommand += foundAddresses[i] + " -I";        
             command = connectCommand.c_str();
+            cout << "command" << "\n";
+            // system("coproc bluetoothctl");
+            // system("echo -e 'info C9:0E:DB:EA:12:02\nexit' >&${COPROC[1]}");
+            // system("output=$(cat <&${COPROC[0]})");
+            // system("echo $output");
             system(command);
+            //cout << "connect" << "\n";
+            //system(connect);
         }
     }
 
