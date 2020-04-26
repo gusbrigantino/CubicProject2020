@@ -87,7 +87,7 @@ std::string BLEService()
     
     parseToVector(cmnd);
 
-    for(int i = 0; i < (int)foundAddresses.size(); i++)
+    for(size_t i = 0; i <= foundAddresses.size(); i++)
     {
         if(desiredAddr.compare(foundAddresses[i]) == 0)
         {

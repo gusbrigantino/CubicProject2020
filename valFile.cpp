@@ -11,7 +11,7 @@ Acct Account;
 
 int main()
 {
-    srand(time(NULL));                                     //sets up the rand() function
+    srand(time(NULL));                                          //sets up the rand() function
 
     ValidationProcess();
 }
@@ -19,31 +19,31 @@ int main()
 
 int ValidationProcess()
 {           
-    std::string beaconAcctNum;                                      //account number from beacon holder
+    std::string beaconAcctNum;                                  //account number from beacon holder
 
     int waitTime = rand() % BEACON_WAIT_TIME;
 
-    int machineState = BLE_ST;                             //init state var of the state machine
+    int machineState = BLE_ST;                                  //init state var of the state machine
 
     while(true)
     {                                    
         switch(machineState)
         {
-            case BLE_ST:                                   //simulates waiting for a beacon to arrive 
+            case BLE_ST:                                        //simulates waiting for a beacon to arrive 
 
                 beaconAcctNum = BLEService();
                 std::cout << beaconAcctNum << std::endl;
 
-                Account.setNumber(beaconAcctNum);       //random account number 0-10 
-                                                        //TODO: make number a 32 bit int
-                waitTime = rand() % BEACON_WAIT_TIME;
+                Account.setNumber(beaconAcctNum);               //random account number 0-10 TODO: MAC Addr
+
+                //waitTime = rand() % BEACON_WAIT_TIME;
 
                 machineState = LOOKUP_ST;              
                 
                 break;
 
 
-            case LOOKUP_ST:                                 //finds given account number from beacon in csv file   
+            case LOOKUP_ST:                                     //finds given account number from beacon in csv file   
 
                 AccountLookUp();
 
@@ -57,21 +57,21 @@ int ValidationProcess()
                 }
                 break;
 
-            case DB_EDIT_ST:                                //makes edits to exsisting csv file by creating new one and renaming
+            case DB_EDIT_ST:                                    //makes edits to exsisting csv file by creating new one and renaming
 
                 UpdateDataBase();
                 
                 machineState = UI_ST;
                 break;
 
-            case UI_ST:                                     //simple ui to output line for now     
+            case UI_ST:                                         //simple ui to output line for now     
 
                 PrintUserInterface();
 
                 machineState = BLE_ST;
                 break;
         }
-        Timer(ST_MACH_DELAY);                               //clocks the state machine to run on an interval
+        Timer(ST_MACH_DELAY);                                   //clocks the state machine to run on an interval
     }
     return 0;
 }
@@ -85,14 +85,14 @@ int AccountLookUp()
 
     std::string line;                                           //std string used in get line calls for reading the csv file
 
-    int dbAcctNum;                                              //account number from database holder
+    std::string dbAcctNum;                                      //account number from database holder
 
     std::string acctName;                                       //account name from database holder
 
     double acctBalance;
     std::string balance;                                        //vars used to convert balance from string to int and save 
 
-    int acctIndex = 0;                                              //account index in csv file tracker
+    int acctIndex = 0;                                          //account index in csv file tracker
 
     dataFile.open(DB_FILE_NAME, std::ios::in);                  //open csv file
 
