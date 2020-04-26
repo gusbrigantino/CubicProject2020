@@ -34,14 +34,16 @@ int ValidationProcess()
                 beaconAcctNum = BLEService();
                 std::cout << beaconAcctNum << std::endl;
 
-                Account.setNumber(beaconAcctNum);               //random account number 0-10 TODO: MAC Addr
-
-                //waitTime = rand() % BEACON_WAIT_TIME;
-
-                machineState = LOOKUP_ST;              
-                
+                if(beaconAcctNum.compare("No address found") == 0)
+                {
+                    machineState = BLE_ST;
+                }
+                else
+                {
+                    Account.setNumber(beaconAcctNum);               //random account number 0-10 TODO: MAC Addr
+                    machineState = LOOKUP_ST;   
+                }
                 break;
-
 
             case LOOKUP_ST:                                     //finds given account number from beacon in csv file   
 
