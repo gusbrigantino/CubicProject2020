@@ -180,7 +180,7 @@ int UpdateDataBase()
 
         Account.setBalance(Account.getBalance() - TICKET_PRICE);    //update balance of account
 
-        newRow = std::to_string(Account.getNumber()) + DELIMITER 
+        newRow = Account.getNumber() + DELIMITER 
             + Account.getName() + DELIMITER 
             + std::to_string(Account.getBalance());                 //creates a new row based on current Acct Account info 
 
@@ -262,7 +262,7 @@ int Timer(int milliseconds)
 Acct::Acct()
 {
     name = "";
-    number = 0;
+    number = "";
     balance = 0.0;
     index = 0;
     foundStatus = false;
