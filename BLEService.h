@@ -23,8 +23,7 @@ void parseToVector(std::string terminalOutput);
 //Get terminal output resulting from param "cmd"
 std::string GetStdoutFromCommand(std::string cmd);
 
-//Get the found BLE address only if address is valid
-std::string getBLEAddr();
-
 //previous main function
 std::string BLEService();
+
+void initDesiredAddrs();

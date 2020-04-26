@@ -1,8 +1,18 @@
 #include "BLEService.h"
 
 
-std::vector<std::string> foundAddresses;
-std::vector<std::string> approvedAddr;
+std::vector<std::string> foundAddrs;
+std::vector<std::string> approvedAddrs;
+std::vector<std::string> desiredAddrs;
+
+//TODO: change storage system to unordered map
+//Will replace desiredAddrs vector and CSV file
+
+void initDesiredAddrs()
+{
+    desiredAddrs.push_back("04:91:62:97:8B:38");
+    //more addresses can be added here
+}
 
 void BLEReset()
 {
@@ -30,13 +40,14 @@ void parseToVector(std::string terminalOutput)
                {
                    if(finalAddress.size() == 17)
                    {
-                        foundAddresses.push_back(finalAddress);
+                        foundAddrs.push_back(finalAddress);
                    }
                }
            }
         }
     }
 }
+
 
 std::string GetStdoutFromCommand(std::string cmd) 
 {
@@ -53,57 +64,50 @@ std::string GetStdoutFromCommand(std::string cmd)
 
     if(stream) 
     {
-        while (!feof(stream))
+        while(!feof(stream))
         {
-            
-        }
-        if (fgets(buffer, max_buffer, stream) != NULL) 
-        {
-            data.append(buffer);
-        }
+            if(fgets(buffer, max_buffer, stream) != NULL) 
+            {
+                data.append(buffer);
+            }
+	}
         pclose(stream);
     }
     return data;
 }
 
-//TODO: Replace string with vector<string> of all accetable addr
-std::string desiredAddr = "04:91:62:97:8B:38";
-
-std::string getBLEAddr()
-{
-    //if(approvedAddr.size() > 0)
-    return approvedAddr[0];
-
-}
 
 std::string BLEService()
 {
-    std::string connectCommand = "sudo gatttool -b ";
-    //string connectCommand = "connect ";
-    //const char *command;
-    //const char *connect = "connect";
+    initDesiredAddrs();
 
-    std::string cmnd = GetStdoutFromCommand("sudo timeout -s INT 5s hcitool lescan");
+    bool beaconFound = false;
+    std::string cmnd = GetStdoutFromCommand("sudo timeout -s INT 0.5s hcitool lescan");
     
-    parseToVector(cmnd);
+    parseToVector(cmnd);            //adds addrs to foundAddresses
 
-    for(size_t i = 0; i <= foundAddresses.size(); i++)
+    for(size_t i = 0; i < foundAddrs.size(); i++)
     {
-        if(desiredAddr.compare(foundAddresses[i]) == 0)
+        for(size_t k = 0; k < desiredAddrs.size(); k++)
         {
-            approvedAddr.push_back(desiredAddr);
-            //connectCommand += foundAddresses[i] + " -I";        
-            //command = connectCommand.c_str();
-            //cout << "command" << "\n";
-            // system("coproc bluetoothctl");
-            // system("echo -e 'info C9:0E:DB:EA:12:02\nexit' >&${COPROC[1]}");
-            // system("output=$(cat <&${COPROC[0]})");
-            // system("echo $output");
-            //system(command);
-            //cout << "connect" << "\n";
-            //system(connect);
+            if(desiredAddrs[k].compare(foundAddrs[i]) == 0)
+            {
+                approvedAddrs.push_back(foundAddrs[i]);
+                beaconFound = true;
+            }
         }
     }
 
-    return approvedAddr[0];
+    //TODO: RSSI comparison on approved addrs
+
+    if(beaconFound)
+    {
+        return approvedAddrs[0];
+    }
+    else
+    {
+        return "No address found";
+    }   
+
+    return 0;
 }
