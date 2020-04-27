@@ -28,7 +28,6 @@ int ValidationProcess()
             case BLE_ST:                                            //simulates waiting for a beacon to arrive 
 
                 beaconAcctNum = BLEService();
-                std::cout << beaconAcctNum << std::endl;
 
                 if(beaconAcctNum.compare("\0") == 0)                //no beacon found
                 {
@@ -36,6 +35,7 @@ int ValidationProcess()
                 }
                 else
                 {
+                    std::cout << beaconAcctNum << std::endl;
                     Account.setNumber(beaconAcctNum);               //random account number 0-10 TODO: MAC Addr
                     machineState = LOOKUP_ST;   
                 }
