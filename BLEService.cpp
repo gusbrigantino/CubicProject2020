@@ -95,7 +95,8 @@ std::string BLEService()
 
         if (desiredAddrs.find(foundAddrs[i]) == desiredAddrs.end()) 
         {
-            cout << key << " not found\n\n"; 
+            //Not sure what to do here may switch to !=
+            //cout << key << " not found\n\n"; 
         }
         else
         {
