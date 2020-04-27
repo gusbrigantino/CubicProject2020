@@ -40,7 +40,6 @@ int ValidationProcess()
                 }
                 else
                 {
-                    /*
                     std::cout << beaconAcctNum << std::endl;
                     if(recentlyProcessedAddrs.find(beaconAcctNum) == recentlyProcessedAddrs.end()) 
                     {
@@ -48,7 +47,8 @@ int ValidationProcess()
                         acctInfoHolder = desiredAddrs.find(beaconAcctNum);
                         recentlyProcessedAddrs.insert(make_pair(acctInfoHolder->first, acctInfoHolder->second));
 
-                        
+                        Account.setNumber(beaconAcctNum);               //random account number 0-10 TODO: MAC Addr
+                        machineState = LOOKUP_ST;   
                     }
                     else
                     {
@@ -65,10 +65,7 @@ int ValidationProcess()
                         {
                             recentlyProcessedAddrs.erase(acctInfoHolder);
                         }
-                    }*/
-
-                    Account.setNumber(beaconAcctNum);               //random account number 0-10 TODO: MAC Addr
-                    machineState = LOOKUP_ST;   
+                    }
                 }
                 break;
 
