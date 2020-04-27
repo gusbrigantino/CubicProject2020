@@ -95,17 +95,16 @@ std::string BLEService()
 
     for(size_t i = 0; i < foundAddrs.size(); i++)
     {
-
-        //possibly will not work with multiple addrs need to understand find better
-        if (desiredAddrs.find(foundAddrs[i]) == desiredAddrs.end()) 
+        if (desiredAddrs.find(foundAddrs[i]) != desiredAddrs.end()) 
         {
             //Not sure what to do here may switch to !=
             //cout << key << " not found\n\n"; 
+            approvedAddrs.push_back(foundAddrs[i]);
+            beaconFound = true;
         }
         else
         {
-            approvedAddrs.push_back(foundAddrs[i]);
-            beaconFound = true;
+            
         }
     }
 
