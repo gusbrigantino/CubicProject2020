@@ -21,10 +21,8 @@
 
 #define MS_PER_SEC          1000
 
-#define BEACON_WAIT_TIME    40                  //state machine clocks every 200ms 40*200 = 8000ms
-                                                //max beacon wait time is equivalent to 8 seconds
-
-#define ACCT_NUM_MAX        10                  //assumes account numbers begin at 0
+#define PROCD_WAIT_TIME     25                  //state machine clocks every 400ms ... = Xms
+                                                //max processed wait time is equivalent to X seconds
 
 #define DB_FILE_NAME        "AcctDB.csv"
 #define NEW_DB_FILE_NAME    "newAcctDB.csv"
@@ -52,6 +50,11 @@ This function is responsible for user interface
 TODO: This is where GUI code will go
 */
 int PrintUserInterface();
+/*
+This function incs counter to time when beacon was last processed 
+in attempt to stop repeating charges after initial charges
+*/
+int UpdateRecentlyProcessedAddrs()
 /*
 This function is a simple software timer used to clock the state machine
 */

@@ -12,7 +12,7 @@ std::unordered_map<std::string, int> recentlyProcessedAddrs;
 
 int main()
 {   
-    initDesiredAddrs();                                             //From BLEService
+    initDesiredAddrs();                                                 //From BLEService
 
     ValidationProcess();
 }
@@ -20,21 +20,19 @@ int main()
 
 int ValidationProcess()
 {           
-    std::string beaconAcctNum;                                      //account number from beacon holder
+    std::string beaconAcctNum;                                          //account number from beacon holder
 
-    //auto acctInfoItr;
-
-    int machineState = BLE_ST;                                      //init state var of the state machine
+    int machineState = BLE_ST;                                          //init state var of the state machine
 
     while(true)
     {                                    
         switch(machineState)
         {
-            case BLE_ST:                                            //simulates waiting for a beacon to arrive 
+            case BLE_ST:                                                //simulates waiting for a beacon to arrive 
 
                 beaconAcctNum = BLEService();
 
-                if(beaconAcctNum.compare("\0") == 0)                //no beacon found
+                if(beaconAcctNum.compare("\0") == 0)                    //no beacon found
                 {
                     machineState = BLE_ST;
                 }
@@ -44,32 +42,22 @@ int ValidationProcess()
                     if(recentlyProcessedAddrs.find(beaconAcctNum) == recentlyProcessedAddrs.end()) 
                     {
                         //Approved
-                        acctInfoHolder = desiredAddrs.find(beaconAcctNum);
-                        recentlyProcessedAddrs.insert(make_pair(acctInfoHolder->first, acctInfoHolder->second));
+                        recentlyProcessedAddrs.insert(std::make_pair(beaconAcctNum, 0));
 
                         Account.setNumber(beaconAcctNum);               //random account number 0-10 TODO: MAC Addr
+                        UpdateRecentlyProcessedAddrs();
                         machineState = LOOKUP_ST;   
                     }
                     else
                     {
                         //processed within recent time limit
+                        UpdateRecentlyProcessedAddrs();
                         machineState = BLE_ST;
-                    }
-
-                    //TODO: make function in BLEService and add to both if and else above
-                    for(acctInfoHolder = recentlyProcessedAddrs.begin(); acctInfoHolder != recentlyProcessedAddrs.end(); acctInfoHolder++) 
-                    { 
-                        acctInfoHolder->second = (acctInfoHolder->second + 1);
-
-                        if(acctInfoHolder->second == 25)
-                        {
-                            recentlyProcessedAddrs.erase(acctInfoHolder);
-                        }
                     }
                 }
                 break;
 
-            case LOOKUP_ST:                                         //finds given account number from beacon in csv file   
+            case LOOKUP_ST:                                             //finds given account number from beacon in csv file   
 
                 AccountLookUp();
 
@@ -83,21 +71,21 @@ int ValidationProcess()
                 }
                 break;
 
-            case DB_EDIT_ST:                                    //makes edits to exsisting csv file by creating new one and renaming
+            case DB_EDIT_ST:                                            //makes edits to exsisting csv file by creating new one and renaming
 
                 UpdateDataBase();
                 
                 machineState = UI_ST;
                 break;
 
-            case UI_ST:                                         //simple ui to output line for now     
+            case UI_ST:                                                 //simple ui to output line for now     
 
                 PrintUserInterface();
 
                 machineState = BLE_ST;
                 break;
         }
-        Timer(ST_MACH_DELAY);                                   //clocks the state machine to run on an interval
+        Timer(ST_MACH_DELAY);                                           //clocks the state machine to run on an interval
     }
     return 0;
 }
@@ -254,6 +242,24 @@ int PrintUserInterface()
         std::cout << "Enjoy your trip!" << std::endl << std::endl;
     }
     
+
+    return 0;
+}
+
+
+int UpdateRecentlyProcessedAddrs()
+{
+    std::unordered_map<std::string, int>:: iterator acctInfoItr;
+    
+    for(acctInfoItr = recentlyProcessedAddrs.begin(); acctInfoItr != recentlyProcessedAddrs.end(); acctInfoItr++) 
+    { 
+        acctInfoItr->second = (acctInfoItr->second + 1);
+
+        if(acctInfoItr->second == 25)
+        {
+            recentlyProcessedAddrs.erase(acctInfoItr);
+        }
+    }
 
     return 0;
 }
