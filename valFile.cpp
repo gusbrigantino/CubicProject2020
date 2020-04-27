@@ -11,8 +11,6 @@ Acct Account;
 
 int main()
 {
-    srand(time(NULL));                                          //sets up the rand() function
-
     ValidationProcess();
 }
 
@@ -21,20 +19,18 @@ int ValidationProcess()
 {           
     std::string beaconAcctNum;                                  //account number from beacon holder
 
-    int waitTime = rand() % BEACON_WAIT_TIME;
-
     int machineState = BLE_ST;                                  //init state var of the state machine
 
     while(true)
     {                                    
         switch(machineState)
         {
-            case BLE_ST:                                        //simulates waiting for a beacon to arrive 
+            case BLE_ST:                                            //simulates waiting for a beacon to arrive 
 
                 beaconAcctNum = BLEService();
                 std::cout << beaconAcctNum << std::endl;
 
-                if(beaconAcctNum.compare("No address found") == 0)
+                if(beaconAcctNum.compare("\0") == 0)                //no beacon found
                 {
                     machineState = BLE_ST;
                 }
@@ -45,7 +41,7 @@ int ValidationProcess()
                 }
                 break;
 
-            case LOOKUP_ST:                                     //finds given account number from beacon in csv file   
+            case LOOKUP_ST:                                         //finds given account number from beacon in csv file   
 
                 AccountLookUp();
 

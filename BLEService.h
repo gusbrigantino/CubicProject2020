@@ -14,6 +14,9 @@
 #include <bluetooth/hci.h>
 #include <bluetooth/hci_lib.h>
 
+//initialize list of all beacons
+void initDesiredAddrs();
+
 //Function to reset ble services
 void BLEReset();
 
@@ -24,6 +27,6 @@ void parseToVector(std::string terminalOutput);
 std::string GetStdoutFromCommand(std::string cmd);
 
 //previous main function
+//scans ble devices
 std::string BLEService();
 
-void initDesiredAddrs();

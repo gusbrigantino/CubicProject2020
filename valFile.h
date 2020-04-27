@@ -17,7 +17,7 @@
 #define DB_EDIT_ST          2
 #define UI_ST               3
 
-#define ST_MACH_DELAY       200                 //200ms
+#define ST_MACH_DELAY       400                 //400ms
 
 #define MS_PER_SEC          1000
 

@@ -8,17 +8,20 @@ std::vector<std::string> desiredAddrs;
 //TODO: change storage system to unordered map
 //Will replace desiredAddrs vector and CSV file
 
+
 void initDesiredAddrs()
 {
     desiredAddrs.push_back("04:91:62:97:8B:38");
     //more addresses can be added here
 }
 
+
 void BLEReset()
 {
     system("sudo hciconfig hci0 down");
     system("sudo hciconfig hci0 up");
 }
+
 
 //parses the terminal output by newline char first
 //then parses those lines by space to separate the name and addr
@@ -82,7 +85,7 @@ std::string BLEService()
     initDesiredAddrs();
 
     bool beaconFound = false;
-    std::string cmnd = GetStdoutFromCommand("sudo timeout -s INT 0.5s hcitool lescan");
+    std::string cmnd = GetStdoutFromCommand("sudo timeout -s INT 0.25s hcitool lescan");
     
     parseToVector(cmnd);            //adds addrs to foundAddresses
 
@@ -106,7 +109,7 @@ std::string BLEService()
     }
     else
     {
-        return "No address found";
+        return "\0";
     }   
 
     return 0;
