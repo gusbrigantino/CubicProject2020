@@ -3,15 +3,16 @@
 
 std::vector<std::string> foundAddrs;
 std::vector<std::string> approvedAddrs;
-std::vector<std::string> desiredAddrs;
+
 
 //TODO: change storage system to unordered map
-//Will replace desiredAddrs vector and CSV file
+//TODO: figure out what to do with processed beacons still in range 
+//Will replace desiredAddrs vector map to either a 1 or a 0 depending on if recently processed?? 
 
 
 void initDesiredAddrs()
 {
-    desiredAddrs.push_back("04:91:62:97:8B:38");
+    desiredAddrs["04:91:62:97:8B:38"] = 0;
     //more addresses can be added here
 }
 
@@ -91,13 +92,15 @@ std::string BLEService()
 
     for(size_t i = 0; i < foundAddrs.size(); i++)
     {
-        for(size_t k = 0; k < desiredAddrs.size(); k++)
+
+        if (desiredAddrs.find(foundAddrs[i]) == desiredAddrs.end()) 
         {
-            if(desiredAddrs[k].compare(foundAddrs[i]) == 0)
-            {
-                approvedAddrs.push_back(foundAddrs[i]);
-                beaconFound = true;
-            }
+            cout << key << " not found\n\n"; 
+        }
+        else
+        {
+            approvedAddrs.push_back(foundAddrs[i]);
+            beaconFound = true;
         }
     }
 

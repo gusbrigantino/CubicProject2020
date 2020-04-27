@@ -9,10 +9,15 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include <unordered_map>
 
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/hci.h>
 #include <bluetooth/hci_lib.h>
+
+//Global Var
+std::unordered_map<std::string, int> desiredAddrs;
+std::unordered_map<std::string, int> recentlyProcessedAddrs;
 
 //initialize list of all beacons
 void initDesiredAddrs();

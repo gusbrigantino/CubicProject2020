@@ -10,16 +10,20 @@
 Acct Account;
 
 int main()
-{
+{   
+    initDesiredAddrs();                                             //From BLEService
+
     ValidationProcess();
 }
 
 
 int ValidationProcess()
 {           
-    std::string beaconAcctNum;                                  //account number from beacon holder
+    std::string beaconAcctNum;                                      //account number from beacon holder
 
-    int machineState = BLE_ST;                                  //init state var of the state machine
+    std::unordered_map<std::string, int> acctInfoHolder;
+
+    int machineState = BLE_ST;                                      //init state var of the state machine
 
     while(true)
     {                                    
@@ -36,8 +40,31 @@ int ValidationProcess()
                 else
                 {
                     std::cout << beaconAcctNum << std::endl;
-                    Account.setNumber(beaconAcctNum);               //random account number 0-10 TODO: MAC Addr
-                    machineState = LOOKUP_ST;   
+                    if(recentlyProcessedAddrs.find(beaconAcctNum) == recentlyProcessedAddrs.end()) 
+                    {
+                        //Approved
+                        acctInfoHolder = desiredAddrs.find(beaconAcctNum);
+                        recentlyProcessedAddrs.insert(make_pair(acctInfoHolder->first, acctInfoHolder->second));
+
+                        Account.setNumber(beaconAcctNum);               //random account number 0-10 TODO: MAC Addr
+                        machineState = LOOKUP_ST;   
+                    }
+                    else
+                    {
+                        //processed within recent time limit
+                        machineState = BLE_ST;
+                    }
+
+                    //TODO: make function in BLEService and add to both if and else above
+                    for(acctInfoHolder = recentlyProcessedAddrs.begin(); acctInfoHolder != recentlyProcessedAddrs.end(); acctInfoHolder++) 
+                    { 
+                        acctInfoHolder->second = (acctInfoHolder->second + 1);
+
+                        if(acctInfoHolder->second == 25)
+                        {
+                            recentlyProcessedAddrs.erase(acctInfoHolder);
+                        }
+                    }
                 }
                 break;
 
