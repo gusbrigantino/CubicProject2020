@@ -16,8 +16,7 @@
 #include <bluetooth/hci_lib.h>
 
 //Global Var
-std::unordered_map<std::string, int> desiredAddrs;
-std::unordered_map<std::string, int> recentlyProcessedAddrs;
+extern std::unordered_map<std::string, int> desiredAddrs;
 
 //initialize list of all beacons
 void initDesiredAddrs();

@@ -3,6 +3,7 @@
 
 std::vector<std::string> foundAddrs;
 std::vector<std::string> approvedAddrs;
+std::unordered_map<std::string, int> desiredAddrs;
 
 
 //TODO: change storage system to unordered map
@@ -93,6 +94,7 @@ std::string BLEService()
     for(size_t i = 0; i < foundAddrs.size(); i++)
     {
 
+        //possibly will not work with multiple addrs need to understand find better
         if (desiredAddrs.find(foundAddrs[i]) == desiredAddrs.end()) 
         {
             //Not sure what to do here may switch to !=

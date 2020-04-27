@@ -8,6 +8,7 @@
 #include "valFile.h"
 
 Acct Account;
+std::unordered_map<std::string, int> recentlyProcessedAddrs;
 
 int main()
 {   
@@ -21,7 +22,7 @@ int ValidationProcess()
 {           
     std::string beaconAcctNum;                                      //account number from beacon holder
 
-    auto acctInfoItr;
+    //auto acctInfoItr;
 
     int machineState = BLE_ST;                                      //init state var of the state machine
 
