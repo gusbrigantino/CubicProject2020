@@ -38,20 +38,23 @@ int ValidationProcess()
                 }
                 else
                 {
-                    std::cout << beaconAcctNum << std::endl;
                     if(recentlyProcessedAddrs.find(beaconAcctNum) == recentlyProcessedAddrs.end()) 
                     {
                         //Approved
                         recentlyProcessedAddrs.insert(std::make_pair(beaconAcctNum, 0));
 
                         Account.setNumber(beaconAcctNum);               //random account number 0-10 TODO: MAC Addr
+
                         UpdateRecentlyProcessedAddrs();
+                        
                         machineState = LOOKUP_ST;   
                     }
                     else
                     {
                         //processed within recent time limit
+                        
                         UpdateRecentlyProcessedAddrs();
+
                         machineState = BLE_ST;
                     }
                 }
