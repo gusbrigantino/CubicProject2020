@@ -13,7 +13,9 @@ std::unordered_map<std::string, int> desiredAddrs;
 
 void initDesiredAddrs()
 {
+    desiredAddrs["04:91:62:97:8B:37"] = 0;
     desiredAddrs["04:91:62:97:8B:38"] = 0;
+    desiredAddrs["04:91:62:97:8B:39"] = 0;
     //more addresses can be added here
 }
 
