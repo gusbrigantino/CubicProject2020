@@ -10,13 +10,18 @@
 #include <vector>
 #include <sstream>
 #include <unordered_map>
+#include <unordered_set> 
 
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/hci.h>
 #include <bluetooth/hci_lib.h>
 
+#define MAC_ADDR_LEN        17
+
+#define NULL_STR            "\0"
+
 //Global Var
-extern std::unordered_map<std::string, int> desiredAddrs;
+extern std::unordered_set<std::string> desiredAddrs;
 
 //initialize list of all beacons
 void initDesiredAddrs();

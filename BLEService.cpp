@@ -1,21 +1,22 @@
 #include "BLEService.h"
 
 
-std::vector<std::string> foundAddrs;
-std::vector<std::string> approvedAddrs;
-std::unordered_map<std::string, int> desiredAddrs;
+//map of all MAC addrs and their RSSI values in a scan
+std::unordered_map<std::string, int> foundAddrs; 
+
+//may of all MAC addrs and their RSSI found in the scan that are ready to be processed
+std::unordered_map<std::string, int> approvedAddrs; 
+
+//set of predefined MAC addrs valid for processing
+std::unordered_set<std::string> desiredAddrs; 
 
 
-//TODO: change storage system to unordered map
-//TODO: figure out what to do with processed beacons still in range 
-//Will replace desiredAddrs vector map to either a 1 or a 0 depending on if recently processed?? 
-
-
+//Is called within valFile.cpp main 
 void initDesiredAddrs()
 {
-    desiredAddrs["04:91:62:97:8B:37"] = 0;
-    desiredAddrs["04:91:62:97:8B:38"] = 0;
-    desiredAddrs["04:91:62:97:8B:39"] = 0;
+    desiredAddrs.insert("04:91:62:97:8B:37");
+    desiredAddrs.insert("04:91:62:97:8B:38");
+    desiredAddrs.insert("04:91:62:97:8B:39");
     //more addresses can be added here
 }
 
@@ -45,7 +46,7 @@ void parseToVector(std::string terminalOutput)
            {
                while(getline(to_ss,finalAddress,' '))
                {
-                   if(finalAddress.size() == 17)
+                   if(finalAddress.size() == MAC_ADDR_LEN)
                    {
                         foundAddrs.push_back(finalAddress);
                    }
@@ -58,7 +59,6 @@ void parseToVector(std::string terminalOutput)
 
 std::string GetStdoutFromCommand(std::string cmd) 
 {
-
     std::string data;
     FILE * stream;
     const int max_buffer = 256;
@@ -77,7 +77,7 @@ std::string GetStdoutFromCommand(std::string cmd)
             {
                 data.append(buffer);
             }
-	}
+	    }
         pclose(stream);
     }
     return data;
@@ -86,31 +86,30 @@ std::string GetStdoutFromCommand(std::string cmd)
 
 std::string BLEService()
 {
-    initDesiredAddrs();
-
     bool beaconFound = false;
     std::string cmnd = GetStdoutFromCommand("sudo timeout -s INT 0.25s hcitool lescan");
     
-    parseToVector(cmnd);            //adds addrs to foundAddresses
+    parseToVector(cmnd);                                                             //adds addrs to foundAddresses
 
     for(size_t i = 0; i < foundAddrs.size(); i++)
     {
-        if(desiredAddrs.find(foundAddrs[i]) != desiredAddrs.end()) 
+        if(desiredAddrs.find(foundAddrs[i]) != desiredAddrs.end())                  //may need to change find logic
         {
             approvedAddrs.push_back(foundAddrs[i]);
             beaconFound = true;
         }
     }
 
-    //TODO: RSSI comparison on approved addrs
+    //TODO: RSSI comparison on approved addrs need to have acurate rssi comparison
 
-    if(beaconFound)
+    if(beaconFound)     //or approved addr is not empty 
     {
-        return approvedAddrs[0];
+        return approvedAddrs[0];              
+        //remove returned addr from approved addr
     }
     else
     {
-        return "\0";
+        return NULL_STR;
     }   
 
     return 0;

@@ -8,6 +8,8 @@
 #include "valFile.h"
 
 Acct Account;
+
+//map of MAC addrs and time since last process
 std::unordered_map<std::string, int> recentlyProcessedAddrs;
 
 int main()
@@ -32,7 +34,7 @@ int ValidationProcess()
 
                 beaconAcctNum = BLEService();
 
-                if(beaconAcctNum.compare("\0") == 0)                    //no beacon found
+                if(beaconAcctNum.compare(NULL_STR) == 0)                    //no beacon found
                 {
                     machineState = BLE_ST;
                 }
@@ -258,7 +260,7 @@ int UpdateRecentlyProcessedAddrs()
     { 
         acctInfoItr->second = (acctInfoItr->second + 1);
 
-        if(acctInfoItr->second == 25)
+        if(acctInfoItr->second == PROCD_WAIT_TIME)
         {
             recentlyProcessedAddrs.erase(acctInfoItr);
         }
