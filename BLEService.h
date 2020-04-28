@@ -20,6 +20,9 @@
 
 #define NULL_STR            "\0"
 
+#define LESCAN              "sudo timeout -s INT 0.25s hcitool lescan"
+#define BTMGMT_FIND         "sudo timeout -s INT 0.25s btmgmt find"
+
 //Global Var
 extern std::unordered_set<std::string> desiredAddrs;
 

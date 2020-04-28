@@ -84,15 +84,45 @@ std::string GetStdoutFromCommand(std::string cmd)
 }
 
 
+void ParseBtmgmtFind(std::string terminalOutput) 
+{
+    std::stringstream ss(terminalOutput);
+    std::string to;
+
+    if(!terminalOutput.empty())
+    {
+        while(getline(ss,to,' '))
+        {
+
+            if(to.compare("dev_found"))
+            {
+                std::string devAddr = getline(ss,to,' ');
+                std::cout << devAddr << std::endl;
+
+                getline(ss,to,' ');
+                getline(ss,to,' ');
+                getline(ss,to,' ');
+                getline(ss,to,' ');
+
+                std::string devRssi = getline(ss,to,' ');
+                std::cout << devRssi << std::endl;
+            }
+        }
+    }
+}
+
+
 std::string BLEService()
 {
     bool beaconFound = false;
     std::unordered_map<std::string, int>:: iterator foundAddrsItr;
     std::unordered_set<std::string>:: iterator desiredAddrsItr;
     
-    std::string cmnd = GetStdoutFromCommand("sudo timeout -s INT 0.25s hcitool lescan");                //time set at .25s
+    std::string cmnd = GetStdoutFromCommand(LESCAN);                                                    //time set at .25s
     
     parseToVector(cmnd);                                                                                //adds addrs to foundAddresses
+    cmnd = GetStdoutFromCommand(BTMGMT_FIND);
+    ParseBtmgmtFind(cmnd);
 
     for(foundAddrsItr = foundAddrs.begin(); foundAddrsItr != foundAddrs.end(); foundAddrsItr++)         //iterates through all of the addrs found in the scan
     {
