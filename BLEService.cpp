@@ -48,7 +48,7 @@ void parseToVector(std::string terminalOutput)
                {
                    if(finalAddress.size() == MAC_ADDR_LEN)
                    {
-                        foundAddrs.push_back(finalAddress);
+                        foundAddrs[finalAddress] = 0;       //0 will be rssi
                    }
                }
            }
@@ -87,24 +87,32 @@ std::string GetStdoutFromCommand(std::string cmd)
 std::string BLEService()
 {
     bool beaconFound = false;
+    std::unordered_map<std::string, int>:: iterator foundAddrsItr;
+    
     std::string cmnd = GetStdoutFromCommand("sudo timeout -s INT 0.25s hcitool lescan");
     
     parseToVector(cmnd);                                                             //adds addrs to foundAddresses
 
-    for(size_t i = 0; i < foundAddrs.size(); i++)
+    for(foundAddrsItr = foundAddrs.begin(); foundAddrsItr != foundAddrs.end(); foundAddrsItr++) 
     {
-        if(desiredAddrs.find(foundAddrs[i]) != desiredAddrs.end())                  //may need to change find logic
+        if(desiredAddrs.find(foundAddrsItr) != desiredAddrs.end())                  //may need to change find logic
         {
-            approvedAddrs.push_back(foundAddrs[i]);
+            approvedAddrs[foundAddrsItr->first] = foundAddrsItr->second;
             beaconFound = true;
         }
     }
 
     //TODO: RSSI comparison on approved addrs need to have acurate rssi comparison
+    //then could get the MAC addr with the lowest RSSI in string form
+    //going to hard code in for now
+
+    std::string nextAddr = "04:91:62:97:8B:38";
 
     if(beaconFound)     //or approved addr is not empty 
     {
-        return approvedAddrs[0];              
+        std::unordered_map<std::string, int> holder;
+        holder = approvedAddrs.find(nextAddr);
+        return holder->first;              
         //remove returned addr from approved addr
     }
     else
