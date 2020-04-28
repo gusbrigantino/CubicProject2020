@@ -38,6 +38,8 @@ void parseToVector(std::string terminalOutput);
 //Get terminal output resulting from param "cmd"
 std::string GetStdoutFromCommand(std::string cmd);
 
+void ParseBtmgmtFind(std::string terminalOutput);
+
 //previous main function
 //scans ble devices
 std::string BLEService();

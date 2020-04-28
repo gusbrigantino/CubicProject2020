@@ -88,6 +88,8 @@ void ParseBtmgmtFind(std::string terminalOutput)
 {
     std::stringstream ss(terminalOutput);
     std::string to;
+    std::string devAddr;
+    std::string devRssi;
 
     if(!terminalOutput.empty())
     {
@@ -96,7 +98,7 @@ void ParseBtmgmtFind(std::string terminalOutput)
 
             if(to.compare("dev_found"))
             {
-                std::string devAddr = getline(ss,to,' ');
+                getline(ss,devAddr,' ');
                 std::cout << devAddr << std::endl;
 
                 getline(ss,to,' ');
@@ -104,7 +106,7 @@ void ParseBtmgmtFind(std::string terminalOutput)
                 getline(ss,to,' ');
                 getline(ss,to,' ');
 
-                std::string devRssi = getline(ss,to,' ');
+                getline(ss,devRssi,' ');
                 std::cout << devRssi << std::endl;
             }
         }
