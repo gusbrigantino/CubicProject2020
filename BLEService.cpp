@@ -90,16 +90,16 @@ std::string BLEService()
     std::unordered_map<std::string, int>:: iterator foundAddrsItr;
     std::unordered_set<std::string>:: iterator desiredAddrsItr;
     
-    std::string cmnd = GetStdoutFromCommand("sudo timeout -s INT 0.25s hcitool lescan");
+    std::string cmnd = GetStdoutFromCommand("sudo timeout -s INT 0.25s hcitool lescan");                //time set at .25s
     
-    parseToVector(cmnd);                                                             //adds addrs to foundAddresses
+    parseToVector(cmnd);                                                                                //adds addrs to foundAddresses
 
-    for(foundAddrsItr = foundAddrs.begin(); foundAddrsItr != foundAddrs.end(); foundAddrsItr++) 
+    for(foundAddrsItr = foundAddrs.begin(); foundAddrsItr != foundAddrs.end(); foundAddrsItr++)         //iterates through all of the addrs found in the scan
     {
-        desiredAddrsItr = desiredAddrs.find(foundAddrsItr);
-        if(desiredAddrsItr != desiredAddrs.end())                  //may need to change find logic
+        desiredAddrsItr = desiredAddrs.find(foundAddrsItr->first);                                      //searches for found addr in the set of predefined addrs for a match
+        if(desiredAddrsItr != desiredAddrs.end())                  
         {
-            approvedAddrs[foundAddrsItr->first] = foundAddrsItr->second;
+            approvedAddrs[foundAddrsItr->first] = foundAddrsItr->second;                                //adds matches and their rssi value to map of approved addrs
             beaconFound = true;
         }
     }
@@ -112,11 +112,15 @@ std::string BLEService()
 
     if(beaconFound)     //or approved addr is not empty 
     {
+        //can possibly use .at() because we know for certain nextAddr will be in approvedAddr
+        //will save search time
         std::unordered_map<std::string, int>:: iterator approvedAddrsItr;
+
         approvedAddrsItr = approvedAddrs.find(nextAddr);
 
+        approvedAddrs.erase(approvedAddrsItr);
+
         return approvedAddrsItr->first;              
-        //remove returned addr from approved addr
     }
     else
     {
