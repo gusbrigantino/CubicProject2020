@@ -88,6 +88,7 @@ std::string BLEService()
 {
     bool beaconFound = false;
     std::unordered_map<std::string, int>:: iterator foundAddrsItr;
+    std::unordered_set<std::string>:: iterator desiredAddrsItr;
     
     std::string cmnd = GetStdoutFromCommand("sudo timeout -s INT 0.25s hcitool lescan");
     
@@ -95,7 +96,8 @@ std::string BLEService()
 
     for(foundAddrsItr = foundAddrs.begin(); foundAddrsItr != foundAddrs.end(); foundAddrsItr++) 
     {
-        if(desiredAddrs.find(foundAddrsItr) != desiredAddrs.end())                  //may need to change find logic
+        desiredAddrsItr = desiredAddrs.find(foundAddrsItr);
+        if(desiredAddrsItr != desiredAddrs.end())                  //may need to change find logic
         {
             approvedAddrs[foundAddrsItr->first] = foundAddrsItr->second;
             beaconFound = true;
@@ -110,9 +112,10 @@ std::string BLEService()
 
     if(beaconFound)     //or approved addr is not empty 
     {
-        std::unordered_map<std::string, int> holder;
-        holder = approvedAddrs.find(nextAddr);
-        return holder->first;              
+        std::unordered_map<std::string, int>:: iterator approvedAddrsItr;
+        approvedAddrsItr = approvedAddrs.find(nextAddr);
+
+        return approvedAddrsItr->first;              
         //remove returned addr from approved addr
     }
     else
