@@ -34,13 +34,13 @@ int ValidationProcess()
 
                 beaconAcctNum = BLEService();
 
-                if(beaconAcctNum.compare(NULL_STR) == 0)                    //no beacon found
+                if(beaconAcctNum.compare(NULL_STR) == 0)                //no beacon found
                 {
                     machineState = BLE_ST;
                 }
                 else
                 {
-                    if(recentlyProcessedAddrs.find(beaconAcctNum) == recentlyProcessedAddrs.end()) 
+                    if(recentlyProcessedAddrs.find(beaconAcctNum) == recentlyProcessedAddrs.end())      //beacon not in recently processed state
                     {
                         //Approved
                         recentlyProcessedAddrs.insert(std::make_pair(beaconAcctNum, 0));

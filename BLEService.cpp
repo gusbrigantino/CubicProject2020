@@ -105,6 +105,9 @@ std::string BLEService()
     }
 
     //TODO: RSSI comparison on approved addrs need to have acurate rssi comparison
+    //needs to somehow update rssi every iteration 
+        //either update existing entry or delete all at end of func and start over
+        //deleting all seems to be the simplest
     //then could get the MAC addr with the lowest RSSI in string form
     //going to hard code in for now
 
@@ -112,7 +115,7 @@ std::string BLEService()
 
     if(beaconFound)     //or approved addr is not empty 
     {
-        approvedAddrs.erase(nextAddr);
+        approvedAddrs.erase(nextAddr);                                                                  //removes by key
 
         return nextAddr;              
     }
