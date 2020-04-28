@@ -112,15 +112,9 @@ std::string BLEService()
 
     if(beaconFound)     //or approved addr is not empty 
     {
-        //can possibly use .at() because we know for certain nextAddr will be in approvedAddr
-        //will save search time
-        std::unordered_map<std::string, int>:: iterator approvedAddrsItr;
+        approvedAddrs.erase(nextAddr);
 
-        approvedAddrsItr = approvedAddrs.find(nextAddr);
-
-        approvedAddrs.erase(approvedAddrsItr);
-
-        return approvedAddrsItr->first;              
+        return nextAddr;              
     }
     else
     {
