@@ -98,20 +98,22 @@ void ParseBtmgmtFind(std::string terminalOutput)
         {
             std::stringstream tokenStream(lineHolder);
             std::string tokenHolder;
-            std::string line;
+            std::vector<std::string> line;
 
             while(getline(tokenStream, tokenHolder, ' '))     //would like to break if [1] not "dev_found" instead of tokenizing whole string no matter what
             {
-                line.push_back(holder);
+                line.push_back(tokenHolder);
             }
             
-            if(line[1].compare("dev_found") == 0)       //if equal meaning correct line with the info
+            if(line[1].compare("dev_found:") == 0)       //if equal meaning correct line with the info
             {
                 devAddr = line[2];
-                std::cout << devAddr << std::endl;
-
                 devRssi = line[7];
-                std::cout << devRssi << std::endl;
+
+                devRssi = devRssi.erase(0, 1);
+                int rssi = stoi(devRssi);
+
+                foundAddrs[devAddr] = rssi;
             }
         }
     }
