@@ -86,27 +86,31 @@ std::string GetStdoutFromCommand(std::string cmd)
 
 void ParseBtmgmtFind(std::string terminalOutput) 
 {
-    std::stringstream ss(terminalOutput);
-    std::string to;
+    std::stringstream lineStream(terminalOutput);
+    std::string lineHolder;
+
     std::string devAddr;
     std::string devRssi;
 
     if(!terminalOutput.empty())
     {
-        while(getline(ss,to,' '))
+        while(getline(lineStream, lineHolder))
         {
+            std::stringstream tokenStream(lineHolder);
+            std::string tokenHolder;
+            std::string line;
 
-            if(to.compare("dev_found"))
+            while(getline(tokenStream, tokenHolder, ' '))     //would like to break if [1] not "dev_found" instead of tokenizing whole string no matter what
             {
-                getline(ss,devAddr,' ');
+                line.push_back(holder);
+            }
+            
+            if(line[1].compare("dev_found") == 0)       //if equal meaning correct line with the info
+            {
+                devAddr = line[2];
                 std::cout << devAddr << std::endl;
 
-                getline(ss,to,' ');
-                getline(ss,to,' ');
-                getline(ss,to,' ');
-                getline(ss,to,' ');
-
-                getline(ss,devRssi,' ');
+                devRssi = line[7];
                 std::cout << devRssi << std::endl;
             }
         }
