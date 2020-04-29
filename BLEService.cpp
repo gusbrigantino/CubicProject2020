@@ -127,6 +127,7 @@ std::string BLEService()
     //iterators
     std::unordered_map<std::string, int>:: iterator foundAddrsItr;
     std::unordered_set<std::string>:: iterator desiredAddrsItr;
+    std::unordered_map<std::string, int>:: iterator approvedAddrsItr;
     
     std::string cmnd = GetStdoutFromCommand(BTMGMT_FIND);
     
@@ -141,26 +142,31 @@ std::string BLEService()
             beaconFound = true;
         }
     }
+    foundAddrs.clear();
 
-    //TODO: RSSI comparison on approved addrs need to have acurate rssi comparison
-    //needs to somehow update rssi every iteration 
-        //either update existing entry or delete all at end of func and start over
-        //deleting all seems to be the simplest
-    //then could get the MAC addr with the lowest RSSI in string form
-    //going to hard code in for now
+    approvedAddrs["04:91:62:97:8B:37"] = 80;
 
-    std::string nextAddr = "04:91:62:97:8B:38";
-
-    if(beaconFound)     //or approved addr is not empty 
+    if(beaconFound || approvedAddrs.begin() != approvedAddrs.end())
     {
-        approvedAddrs.erase(nextAddr);                                                                  //removes by key
+        int currRssi, minRssi = (approvedAddrs.begin())->second;
+        std::string minKey = (approvedAddrs.begin())->first;
 
-        return nextAddr;              
+        for(approvedAddrsItr = approvedAddrs.begin(); approvedAddrsItr != approvedAddrs.end(); approvedAddrsItr++) 
+        {
+            currRssi = approvedAddrsItr->second;
+
+            if(currRssi < minRssi)
+            {
+                minRssi = currRssi;
+                minKey = approvedAddrsItr->first;
+            }
+        }
+
+        approvedAddrs.erase(minKey);
+        return minKey;
     }
     else
     {
         return NULL_STR;
-    }   
-
-    return 0;
+    }
 }
