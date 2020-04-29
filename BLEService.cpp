@@ -4,9 +4,6 @@
 //map of all MAC addrs and their RSSI values in a scan
 std::unordered_map<std::string, int> foundAddrs; 
 
-//may of all MAC addrs and their RSSI found in the scan that are ready to be processed
-std::unordered_map<std::string, int> approvedAddrs; 
-
 //set of predefined MAC addrs valid for processing
 std::unordered_set<std::string> desiredAddrs; 
 
@@ -122,14 +119,17 @@ void ParseBtmgmtFind(std::string terminalOutput)
 
 std::string BLEService()
 {
+    //may of all MAC addrs and their RSSI found in the scan that are ready to be processed
+    std::unordered_map<std::string, int> approvedAddrs; 
+
     bool beaconFound = false;
+
+    //iterators
     std::unordered_map<std::string, int>:: iterator foundAddrsItr;
     std::unordered_set<std::string>:: iterator desiredAddrsItr;
     
-    std::string cmnd = GetStdoutFromCommand(LESCAN);                                                    //time set at .25s
+    std::string cmnd = GetStdoutFromCommand(BTMGMT_FIND);
     
-    parseToVector(cmnd);                                                                                //adds addrs to foundAddresses
-    cmnd = GetStdoutFromCommand(BTMGMT_FIND);
     ParseBtmgmtFind(cmnd);
 
     for(foundAddrsItr = foundAddrs.begin(); foundAddrsItr != foundAddrs.end(); foundAddrsItr++)         //iterates through all of the addrs found in the scan
