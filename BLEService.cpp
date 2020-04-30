@@ -1,15 +1,14 @@
 #include "BLEService.h"
 
-
 //map of all MAC addrs and their RSSI values in a scan
-std::unordered_map<std::string, int> foundAddrs; 
+std::unordered_map<std::string, int> foundAddrs;                        //could make local var in BLEService and pass to parser functions
 
 //set of predefined MAC addrs valid for processing
 std::unordered_set<std::string> desiredAddrs; 
 
 
 //Is called within valFile.cpp main 
-void initDesiredAddrs()
+void InitDesiredAddrs()
 {
     desiredAddrs.insert("04:91:62:97:8B:37");
     desiredAddrs.insert("04:91:62:97:8B:38");
@@ -18,6 +17,7 @@ void initDesiredAddrs()
 }
 
 
+//resets BLE 
 void BLEReset()
 {
     system("sudo hciconfig hci0 down");
@@ -27,7 +27,7 @@ void BLEReset()
 
 //parses the terminal output by newline char first
 //then parses those lines by space to separate the name and addr
-void parseToVector(std::string terminalOutput) 
+void ParseHcitoolLescan(std::string terminalOutput) 
 {
     std::stringstream ss(terminalOutput);
     std::string to;
@@ -45,10 +45,46 @@ void parseToVector(std::string terminalOutput)
                {
                    if(finalAddress.size() == MAC_ADDR_LEN)
                    {
-                        foundAddrs[finalAddress] = 0;       //0 will be rssi
+                        foundAddrs[finalAddress] = 0;       
                    }
                }
            }
+        }
+    }
+}
+
+
+void ParseBtmgmtFind(std::string terminalOutput) 
+{
+    std::stringstream lineStream(terminalOutput);
+    std::string lineHolder;
+
+    std::string devAddr;
+    std::string devRssi;
+
+    if(!terminalOutput.empty())
+    {
+        while(getline(lineStream, lineHolder))
+        {
+            std::stringstream tokenStream(lineHolder);
+            std::string tokenHolder;
+            std::vector<std::string> line;
+
+            while(getline(tokenStream, tokenHolder, ' '))       //would like to break if [1] not "dev_found" instead of tokenizing whole string no matter what
+            {
+                line.push_back(tokenHolder);
+            }
+            
+            if(line[1].compare("dev_found:") == 0)              //if equal meaning correct line with the info
+            {
+                devAddr = line[MAC_INDEX_BT];                   //addr index in cmd line output
+                devRssi = line[RSSI_INDEX_BT];                  //rssi index in cmd line output
+
+                devRssi = devRssi.erase(0, 1);                  //erase '-' in front of rssi to get only int value cmd output: "-22" we want "22"
+                int rssi = stoi(devRssi);                       //cast to int
+
+                foundAddrs[devAddr] = rssi;                     //save addr and rssi in map
+            }
         }
     }
 }
@@ -81,42 +117,6 @@ std::string GetStdoutFromCommand(std::string cmd)
 }
 
 
-void ParseBtmgmtFind(std::string terminalOutput) 
-{
-    std::stringstream lineStream(terminalOutput);
-    std::string lineHolder;
-
-    std::string devAddr;
-    std::string devRssi;
-
-    if(!terminalOutput.empty())
-    {
-        while(getline(lineStream, lineHolder))
-        {
-            std::stringstream tokenStream(lineHolder);
-            std::string tokenHolder;
-            std::vector<std::string> line;
-
-            while(getline(tokenStream, tokenHolder, ' '))     //would like to break if [1] not "dev_found" instead of tokenizing whole string no matter what
-            {
-                line.push_back(tokenHolder);
-            }
-            
-            if(line[1].compare("dev_found:") == 0)       //if equal meaning correct line with the info
-            {
-                devAddr = line[2];
-                devRssi = line[7];
-
-                devRssi = devRssi.erase(0, 1);
-                int rssi = stoi(devRssi);
-
-                foundAddrs[devAddr] = rssi;
-            }
-        }
-    }
-}
-
-
 std::string BLEService()
 {
     //may of all MAC addrs and their RSSI found in the scan that are ready to be processed
@@ -129,40 +129,39 @@ std::string BLEService()
     std::unordered_set<std::string>:: iterator desiredAddrsItr;
     std::unordered_map<std::string, int>:: iterator approvedAddrsItr;
     
-    std::string cmnd = GetStdoutFromCommand(BTMGMT_FIND);
+    std::string cmnd = GetStdoutFromCommand(BTMGMT_FIND);                                               //gets all output from command line
     
-    ParseBtmgmtFind(cmnd);
+    ParseBtmgmtFind(cmnd);                                                                              //gets desired output into foundAddrs
 
     for(foundAddrsItr = foundAddrs.begin(); foundAddrsItr != foundAddrs.end(); foundAddrsItr++)         //iterates through all of the addrs found in the scan
     {
         desiredAddrsItr = desiredAddrs.find(foundAddrsItr->first);                                      //searches for found addr in the set of predefined addrs for a match
-        if(desiredAddrsItr != desiredAddrs.end())                  
+        if(desiredAddrsItr != desiredAddrs.end() && foundAddrsItr->second < 55)                  
         {
             approvedAddrs[foundAddrsItr->first] = foundAddrsItr->second;                                //adds matches and their rssi value to map of approved addrs
             beaconFound = true;
         }
     }
-    foundAddrs.clear();
+    foundAddrs.clear();                                                                                 //clears all found addrs for next scan
 
-    approvedAddrs["04:91:62:97:8B:37"] = 80;
-
-    if(beaconFound || approvedAddrs.begin() != approvedAddrs.end())
+    //RSSI Check
+    if(beaconFound)
     {
-        int currRssi, minRssi = (approvedAddrs.begin())->second;
+        int currRssi, minRssi = (approvedAddrs.begin())->second;                                        //set the minimum rssi to the first approved addrs rssi and compare from there
         std::string minKey = (approvedAddrs.begin())->first;
 
-        for(approvedAddrsItr = approvedAddrs.begin(); approvedAddrsItr != approvedAddrs.end(); approvedAddrsItr++) 
+        for(approvedAddrsItr = approvedAddrs.begin(); approvedAddrsItr != approvedAddrs.end(); approvedAddrsItr++) //iterate through approved addrs
         {
-            currRssi = approvedAddrsItr->second;
+            currRssi = approvedAddrsItr->second;                                                        //set current rssi to next element
 
-            if(currRssi < minRssi)
+            if(currRssi < minRssi)                                                                      //comapre and switch accordingly to get min rssi out of the approved addrs
             {
                 minRssi = currRssi;
                 minKey = approvedAddrsItr->first;
             }
         }
-
-        approvedAddrs.erase(minKey);
+        
+        approvedAddrs.erase(minKey);                                                                    //may be redundant since approvedAddrs in delecared every function call
         return minKey;
     }
     else

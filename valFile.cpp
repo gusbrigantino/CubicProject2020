@@ -14,7 +14,7 @@ std::unordered_map<std::string, int> recentlyProcessedAddrs;
 
 int main()
 {   
-    initDesiredAddrs();                                                 //From BLEService
+    InitDesiredAddrs();                                                 //From BLEService
 
     ValidationProcess();
 }
@@ -45,8 +45,8 @@ int ValidationProcess()
                         //Approved
                         recentlyProcessedAddrs.insert(std::make_pair(beaconAcctNum, 0));
 
-                        Account.setNumber(beaconAcctNum);               //random account number 0-10 TODO: MAC Addr
-
+                        Account.setNumber(beaconAcctNum);               
+                        
                         UpdateRecentlyProcessedAddrs();
                         
                         machineState = LOOKUP_ST;   

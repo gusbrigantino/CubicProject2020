@@ -18,6 +18,9 @@
 
 #define MAC_ADDR_LEN        17
 
+#define MAC_INDEX_BT        2
+#define RSSI_INDEX_BT       7
+
 #define NULL_STR            "\0"
 
 #define LESCAN              "sudo timeout -s INT 0.25s hcitool lescan"
@@ -27,18 +30,20 @@
 extern std::unordered_set<std::string> desiredAddrs;
 
 //initialize list of all beacons
-void initDesiredAddrs();
+void InitDesiredAddrs();
 
 //Function to reset ble services
 void BLEReset();
 
 //Parse param "terminalOutput" to a vector as Bluetooth addresses only
-void parseToVector(std::string terminalOutput);
+//previously parseToVector
+void ParseHcitoolLescan(std::string terminalOutput);
+
+//parses the terminal output from $ sudo btmgmt find
+void ParseBtmgmtFind(std::string terminalOutput);
 
 //Get terminal output resulting from param "cmd"
 std::string GetStdoutFromCommand(std::string cmd);
-
-void ParseBtmgmtFind(std::string terminalOutput);
 
 //previous main function
 //scans ble devices
