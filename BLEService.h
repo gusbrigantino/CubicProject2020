@@ -26,21 +26,21 @@
 #define LESCAN              "sudo timeout -s INT 0.25s hcitool lescan"
 #define BTMGMT_FIND         "sudo timeout -s INT 0.25s btmgmt find"
 
-//Global Var
+//Global Var used in both valFile.cpp and BLEService.cpp
 extern std::unordered_set<std::string> desiredAddrs;
 
 //initialize list of all beacons
-void InitDesiredAddrs();
+int InitDesiredAddrs();
 
 //Function to reset ble services
-void BLEReset();
+int BLEReset();
 
 //Parse param "terminalOutput" to a vector as Bluetooth addresses only
 //previously parseToVector
-void ParseHcitoolLescan(std::string terminalOutput);
+int ParseHcitoolLescan(std::string terminalOutput, std::unordered_map<std::string, int> &foundMap);
 
 //parses the terminal output from $ sudo btmgmt find
-void ParseBtmgmtFind(std::string terminalOutput);
+int ParseBtmgmtFind(std::string terminalOutput, std::unordered_map<std::string, int> &foundMap);
 
 //Get terminal output resulting from param "cmd"
 std::string GetStdoutFromCommand(std::string cmd);

@@ -1,33 +1,33 @@
 #include "BLEService.h"
 
-//map of all MAC addrs and their RSSI values in a scan
-std::unordered_map<std::string, int> foundAddrs;                        //could make local var in BLEService and pass to parser functions
-
 //set of predefined MAC addrs valid for processing
 std::unordered_set<std::string> desiredAddrs; 
 
-
 //Is called within valFile.cpp main 
-void InitDesiredAddrs()
+int InitDesiredAddrs()
 {
     desiredAddrs.insert("04:91:62:97:8B:37");
     desiredAddrs.insert("04:91:62:97:8B:38");
     desiredAddrs.insert("04:91:62:97:8B:39");
     //more addresses can be added here
+
+    return 0;
 }
 
 
 //resets BLE 
-void BLEReset()
+int BLEReset()
 {
     system("sudo hciconfig hci0 down");
     system("sudo hciconfig hci0 up");
+
+    return 0;
 }
 
 
 //parses the terminal output by newline char first
 //then parses those lines by space to separate the name and addr
-void ParseHcitoolLescan(std::string terminalOutput) 
+int ParseHcitoolLescan(std::string terminalOutput, std::unordered_map<std::string, int> &foundMap) 
 {
     std::stringstream ss(terminalOutput);
     std::string to;
@@ -45,16 +45,18 @@ void ParseHcitoolLescan(std::string terminalOutput)
                {
                    if(finalAddress.size() == MAC_ADDR_LEN)
                    {
-                        foundAddrs[finalAddress] = 0;       
+                        foundMap[finalAddress] = 0;       
                    }
                }
            }
         }
     }
+
+    return 0;
 }
 
 
-void ParseBtmgmtFind(std::string terminalOutput) 
+int ParseBtmgmtFind(std::string terminalOutput, std::unordered_map<std::string, int> &foundMap) 
 {
     std::stringstream lineStream(terminalOutput);
     std::string lineHolder;
@@ -64,11 +66,11 @@ void ParseBtmgmtFind(std::string terminalOutput)
 
     if(!terminalOutput.empty())
     {
-        while(getline(lineStream, lineHolder))
+        while(getline(lineStream, lineHolder))                  //get each line
         {
-            std::stringstream tokenStream(lineHolder);
+            std::stringstream tokenStream(lineHolder);          //stringstream for line
             std::string tokenHolder;
-            std::vector<std::string> line;
+            std::vector<std::string> line;                      //vector for tokens within each line
 
             while(getline(tokenStream, tokenHolder, ' '))       //would like to break if [1] not "dev_found" instead of tokenizing whole string no matter what
             {
@@ -83,10 +85,12 @@ void ParseBtmgmtFind(std::string terminalOutput)
                 devRssi = devRssi.erase(0, 1);                  //erase '-' in front of rssi to get only int value cmd output: "-22" we want "22"
                 int rssi = stoi(devRssi);                       //cast to int
 
-                foundAddrs[devAddr] = rssi;                     //save addr and rssi in map
+                foundMap[devAddr] = rssi;                     //save addr and rssi in map
             }
         }
     }
+
+    return 0;
 }
 
 
@@ -119,6 +123,9 @@ std::string GetStdoutFromCommand(std::string cmd)
 
 std::string BLEService()
 {
+    //map of all MAC addrs and their RSSI values in a scan
+    std::unordered_map<std::string, int> foundAddrs;
+
     //may of all MAC addrs and their RSSI found in the scan that are ready to be processed
     std::unordered_map<std::string, int> approvedAddrs; 
 
@@ -131,7 +138,7 @@ std::string BLEService()
     
     std::string cmnd = GetStdoutFromCommand(BTMGMT_FIND);                                               //gets all output from command line
     
-    ParseBtmgmtFind(cmnd);                                                                              //gets desired output into foundAddrs
+    ParseBtmgmtFind(cmnd, foundAddrs);                                                                              //gets desired output into foundAddrs
 
     for(foundAddrsItr = foundAddrs.begin(); foundAddrsItr != foundAddrs.end(); foundAddrsItr++)         //iterates through all of the addrs found in the scan
     {
@@ -142,7 +149,6 @@ std::string BLEService()
             beaconFound = true;
         }
     }
-    foundAddrs.clear();                                                                                 //clears all found addrs for next scan
 
     //RSSI Check
     if(beaconFound)
@@ -160,8 +166,7 @@ std::string BLEService()
                 minKey = approvedAddrsItr->first;
             }
         }
-        
-        approvedAddrs.erase(minKey);                                                                    //may be redundant since approvedAddrs in delecared every function call
+
         return minKey;
     }
     else

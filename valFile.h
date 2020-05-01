@@ -36,25 +36,30 @@
 This function contains the state machine that simulates the validator
 */
 int ValidationProcess();
+
 /*
 This function takes an account number from the beacon (simulated) and determines if the account 
 is valid using the databse (csv file)
 */
 int AccountLookUp();
+
 /*
 This function updates the balance of a charged account in the database
 */
 int UpdateDataBase();
+
+/*
+This function incs counter to time when beacon was last processed 
+in attempt to stop repeating charges after initial charges
+*/
+int UpdateRecentlyProcessedAddrs(std::unordered_map<std::string, int> &addrMap);
+
 /*
 This function is responsible for user interface
 TODO: This is where GUI code will go
 */
 int PrintUserInterface();
-/*
-This function incs counter to time when beacon was last processed 
-in attempt to stop repeating charges after initial charges
-*/
-int UpdateRecentlyProcessedAddrs();
+
 /*
 This function is a simple software timer used to clock the state machine
 */

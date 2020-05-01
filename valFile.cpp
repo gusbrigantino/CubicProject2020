@@ -9,9 +9,6 @@
 
 Acct Account;
 
-//map of MAC addrs and time since last process
-std::unordered_map<std::string, int> recentlyProcessedAddrs;
-
 int main()
 {   
     InitDesiredAddrs();                                                 //From BLEService
@@ -21,7 +18,9 @@ int main()
 
 
 int ValidationProcess()
-{           
+{   
+    std::unordered_map<std::string, int> recentlyProcessedAddrs;        //map of MAC addrs and time since last process
+
     std::string beaconAcctNum;                                          //account number from beacon holder
 
     int machineState = BLE_ST;                                          //init state var of the state machine
@@ -46,8 +45,8 @@ int ValidationProcess()
                         recentlyProcessedAddrs.insert(std::make_pair(beaconAcctNum, 0));
 
                         Account.setNumber(beaconAcctNum);               
-                        
-                        UpdateRecentlyProcessedAddrs();
+
+                        UpdateRecentlyProcessedAddrs(recentlyProcessedAddrs);
                         
                         machineState = LOOKUP_ST;   
                     }
@@ -55,7 +54,7 @@ int ValidationProcess()
                     {
                         //processed within recent time limit
                         
-                        UpdateRecentlyProcessedAddrs();
+                        UpdateRecentlyProcessedAddrs(recentlyProcessedAddrs);
 
                         machineState = BLE_ST;
                     }
@@ -92,10 +91,9 @@ int ValidationProcess()
         }
         Timer(ST_MACH_DELAY);                                           //clocks the state machine to run on an interval
     }
+
     return 0;
 }
-
-
 
 
 int AccountLookUp()
@@ -169,8 +167,6 @@ int AccountLookUp()
 }
 
 
-
-
 int UpdateDataBase()
 {
     std::fstream fileRead;                                          //file to read from
@@ -222,6 +218,22 @@ int UpdateDataBase()
 }
 
 
+int UpdateRecentlyProcessedAddrs(std::unordered_map<std::string, int> &addrMap)
+{
+    std::unordered_map<std::string, int>:: iterator acctInfoItr;
+    
+    for(acctInfoItr = addrMap.begin(); acctInfoItr != addrMap.end(); acctInfoItr++)         //iterate through recently processed addrs
+    { 
+        acctInfoItr->second = (acctInfoItr->second + 1);                                    //int var in map counts how many times state machine has iterated 
+
+        if(acctInfoItr->second == PROCD_WAIT_TIME)                                          //wait period is over 
+        {
+            addrMap.erase(acctInfoItr);
+        }
+    }
+
+    return 0;
+}
 
 
 int PrintUserInterface()
@@ -247,28 +259,8 @@ int PrintUserInterface()
         std::cout << "Enjoy your trip!" << std::endl << std::endl;
     }
     
-
     return 0;
 }
-
-
-int UpdateRecentlyProcessedAddrs()
-{
-    std::unordered_map<std::string, int>:: iterator acctInfoItr;
-    
-    for(acctInfoItr = recentlyProcessedAddrs.begin(); acctInfoItr != recentlyProcessedAddrs.end(); acctInfoItr++) 
-    { 
-        acctInfoItr->second = (acctInfoItr->second + 1);
-
-        if(acctInfoItr->second == PROCD_WAIT_TIME)
-        {
-            recentlyProcessedAddrs.erase(acctInfoItr);
-        }
-    }
-
-    return 0;
-}
-
 
 
 int Timer(int milliseconds)
@@ -287,10 +279,9 @@ int Timer(int milliseconds)
             timerFlag = false;
         }
     }
+
     return 0;
 }
-
-
 
 
 //Acct Class Functions
