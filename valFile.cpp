@@ -10,46 +10,58 @@
 Acct Account;
 
 int main()
-{
-    srand(time(NULL));                                     //sets up the rand() function
+{   
+    InitDesiredAddrs();                                                 //From BLEService
 
     ValidationProcess();
 }
 
 
 int ValidationProcess()
-{           
-    int beaconAcctNum;                                      //account number from beacon holder
+{   
+    std::unordered_map<std::string, int> recentlyProcessedAddrs;        //map of MAC addrs and time since last process
 
-    int waitTime = rand() % BEACON_WAIT_TIME;
+    std::string beaconAcctNum;                                          //account number from beacon holder
 
-    int machineState = IDLE_ST;                             //init state var of the state machine
+    int machineState = BLE_ST;                                          //init state var of the state machine
 
     while(true)
     {                                    
         switch(machineState)
         {
-            case IDLE_ST:                                   //simulates waiting for a beacon to arrive 
+            case BLE_ST:                                                //simulates waiting for a beacon to arrive 
 
-                beaconAcctNum = BeaconSimulator(waitTime);
+                beaconAcctNum = BLEService();
 
-                if(beaconAcctNum == -1)                     //beacon not yet found continue to idle
+                if(beaconAcctNum.compare(NULL_STR) == 0)                //no beacon found
                 {
-                    machineState = IDLE_ST;
+                    machineState = BLE_ST;
                 }
                 else
                 {
-                    
-                    Account.setNumber(beaconAcctNum);       //random account number 0-10 
-                                                            //TODO: make number a 32 bit int
-                    waitTime = rand() % BEACON_WAIT_TIME;
+                    if(recentlyProcessedAddrs.find(beaconAcctNum) == recentlyProcessedAddrs.end())      //beacon not in recently processed state
+                    {
+                        //Approved
+                        recentlyProcessedAddrs.insert(std::make_pair(beaconAcctNum, 0));
 
-                    machineState = LOOKUP_ST;              
+                        Account.setNumber(beaconAcctNum);               
+
+                        UpdateRecentlyProcessedAddrs(recentlyProcessedAddrs);
+                        
+                        machineState = LOOKUP_ST;   
+                    }
+                    else
+                    {
+                        //processed within recent time limit
+                        
+                        UpdateRecentlyProcessedAddrs(recentlyProcessedAddrs);
+
+                        machineState = BLE_ST;
+                    }
                 }
                 break;
 
-
-            case LOOKUP_ST:                                 //finds given account number from beacon in csv file   
+            case LOOKUP_ST:                                             //finds given account number from beacon in csv file   
 
                 AccountLookUp();
 
@@ -63,26 +75,25 @@ int ValidationProcess()
                 }
                 break;
 
-            case DB_EDIT_ST:                                //makes edits to exsisting csv file by creating new one and renaming
+            case DB_EDIT_ST:                                            //makes edits to exsisting csv file by creating new one and renaming
 
                 UpdateDataBase();
                 
                 machineState = UI_ST;
                 break;
 
-            case UI_ST:                                     //simple ui to output line for now     
+            case UI_ST:                                                 //simple ui to output line for now     
 
                 UIClient();
 
-                machineState = IDLE_ST;
+                machineState = BLE_ST;
                 break;
         }
-        Timer(ST_MACH_DELAY);                               //clocks the state machine to run on an interval
+        Timer(ST_MACH_DELAY);                                           //clocks the state machine to run on an interval
     }
+
     return 0;
 }
-
-
 
 
 int AccountLookUp()
@@ -91,7 +102,7 @@ int AccountLookUp()
 
     std::string line;                                           //std string used in get line calls for reading the csv file
 
-    int dbAcctNum;                                              //account number from database holder
+    std::string dbAcctNum;                                      //account number from database holder
 
     std::string acctName;                                       //account name from database holder
 
@@ -156,8 +167,6 @@ int AccountLookUp()
 }
 
 
-
-
 int UpdateDataBase()
 {
     std::fstream fileRead;                                          //file to read from
@@ -184,7 +193,7 @@ int UpdateDataBase()
 
         Account.setBalance(Account.getBalance() - TICKET_PRICE);    //update balance of account
 
-        newRow = std::to_string(Account.getNumber()) + DELIMITER 
+        newRow = Account.getNumber() + DELIMITER 
             + Account.getName() + DELIMITER 
             + std::to_string(Account.getBalance());                 //creates a new row based on current Acct Account info 
 
@@ -209,6 +218,22 @@ int UpdateDataBase()
 }
 
 
+int UpdateRecentlyProcessedAddrs(std::unordered_map<std::string, int> &addrMap)
+{
+    std::unordered_map<std::string, int>:: iterator acctInfoItr;
+    
+    for(acctInfoItr = addrMap.begin(); acctInfoItr != addrMap.end(); acctInfoItr++)         //iterate through recently processed addrs
+    { 
+        acctInfoItr->second = (acctInfoItr->second + 1);                                    //int var in map counts how many times state machine has iterated 
+
+        if(acctInfoItr->second == PROCD_WAIT_TIME)                                          //wait period is over 
+        {
+            addrMap.erase(acctInfoItr);
+        }
+    }
+
+    return 0;
+}
 
 
 int UIClient()
@@ -270,17 +295,16 @@ int Timer(int milliseconds)
             timerFlag = false;
         }
     }
+
     return 0;
 }
-
-
 
 
 //Acct Class Functions
 Acct::Acct()
 {
     name = "";
-    number = 0;
+    number = "";
     balance = 0.0;
     index = 0;
     foundStatus = false;
@@ -298,12 +322,12 @@ void Acct::setName(std::string newName)
     name = newName;
 }
 
-int Acct::getNumber()
+std::string Acct::getNumber()
 {
     return number;
 }
 
-void Acct::setNumber(int newNumber)
+void Acct::setNumber(std::string newNumber)
 {
     number = newNumber;
 }

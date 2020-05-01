@@ -14,21 +14,19 @@
 #include <sys/socket.h> 
 #include <arpa/inet.h> 
 
-#include "beacon.h"
+#include "BLEService.h"
 
-#define IDLE_ST             0
+#define BLE_ST              0
 #define LOOKUP_ST           1
 #define DB_EDIT_ST          2
 #define UI_ST               3
 
-#define ST_MACH_DELAY       200                 //200ms
+#define ST_MACH_DELAY       400                 //400ms
 
 #define MS_PER_SEC          1000
 
-#define BEACON_WAIT_TIME    40                  //state machine clocks every 200ms 40*200 = 8000ms
-                                                //max beacon wait time is equivalent to 8 seconds
-
-#define ACCT_NUM_MAX        10                  //assumes account numbers begin at 0
+#define PROCD_WAIT_TIME     25                  //state machine clocks every 400ms ... = Xms
+                                                //max processed wait time is equivalent to X seconds
 
 #define DB_FILE_NAME        "AcctDB.csv"
 #define NEW_DB_FILE_NAME    "newAcctDB.csv"
@@ -50,15 +48,24 @@
 This function contains the state machine that simulates the validator
 */
 int ValidationProcess();
+
 /*
 This function takes an account number from the beacon (simulated) and determines if the account 
 is valid using the databse (csv file)
 */
 int AccountLookUp();
+
 /*
 This function updates the balance of a charged account in the database
 */
 int UpdateDataBase();
+
+/*
+This function incs counter to time when beacon was last processed 
+in attempt to stop repeating charges after initial charges
+*/
+int UpdateRecentlyProcessedAddrs(std::unordered_map<std::string, int> &addrMap);
+
 /*
 This function handles the UI client that feeds data to socket for GUI
 */
@@ -73,7 +80,7 @@ class Acct
 {
     private:
     std::string name;                               //name of account holder
-    int number;                                     //account number
+    std::string number;                                     //account number
     double balance;                                 //current account balance
     int index;                                      //where account is located in csv file based on rows
     bool foundStatus;                               //if the account was sucessfully found in the database
@@ -85,8 +92,8 @@ class Acct
 
     std::string getName();
     void setName(std::string newName);
-    int getNumber();
-    void setNumber(int newNumber);
+    std::string getNumber();
+    void setNumber(std::string newNumber);
     double getBalance();
     void setBalance(double newBalance);
     int getIndex();
