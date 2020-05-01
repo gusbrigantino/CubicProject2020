@@ -21,6 +21,8 @@
 #define MAC_INDEX_BT        2
 #define RSSI_INDEX_BT       7
 
+#define RSSI_MIN_VAL        55
+
 #define NULL_STR            "\0"
 
 #define LESCAN              "sudo timeout -s INT 0.25s hcitool lescan"

@@ -143,7 +143,7 @@ std::string BLEService()
     for(foundAddrsItr = foundAddrs.begin(); foundAddrsItr != foundAddrs.end(); foundAddrsItr++)         //iterates through all of the addrs found in the scan
     {
         desiredAddrsItr = desiredAddrs.find(foundAddrsItr->first);                                      //searches for found addr in the set of predefined addrs for a match
-        if(desiredAddrsItr != desiredAddrs.end() && foundAddrsItr->second < 55)                  
+        if(desiredAddrsItr != desiredAddrs.end() && foundAddrsItr->second < RSSI_MIN_VAL)               //TODO: currently set to 55 need to decide what the best value is  
         {
             approvedAddrs[foundAddrsItr->first] = foundAddrsItr->second;                                //adds matches and their rssi value to map of approved addrs
             beaconFound = true;
