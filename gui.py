@@ -10,6 +10,8 @@ portNumber = 8080
 IPAddress = '127.0.0.1'
 bufferSize = 1024
 
+smallScreenMax = 1024
+
 nameIndex = 0
 balanceIndex = 1
 foundStatusIndex = 2
@@ -36,13 +38,13 @@ def main():
 #   TKINTER INIT
     tk = tkr.Tk()
 
-    smallScreen = False
-
     screenWidth = tk.winfo_screenwidth()
     screenHeight = tk.winfo_screenheight()
 
-    if(screenWidth <= 1024):
+    if(screenWidth <= smallScreenMax):
         smallScreen = True
+    else:
+        smallScreen = False
 
     tk.title("San Diego Metro Station")
     tk.bind("<F11>", lambda event: tk.attributes("-fullscreen", not tk.attributes("-fullscreen")))
@@ -95,39 +97,34 @@ def main():
 #   TKINTER UPDATE
     tk.update_idletasks()
     tk.update()
-    i=0
+#    i = 0
 
     while True: 
         tk.update_idletasks()
         tk.update()
-        Timer(500)
+        Timer(500)                                                          #TODO: make dynamic
 
-#        connection, clientAddress = guiSocket.accept()	                    #connection made with client (val)
+        connection, clientAddress = guiSocket.accept()	                    #connection made with client (val)
         
         try:
             #Incoming data in order: "<Acct Name>, <Acct Balance>, <Acct Found Status>, <Acct Balance Status>"
             #-----------------------------------------------------------------------------------------------#
 
-#            rawBytes = connection.recv(bufferSize)                          #get all of the incoming data (size of buffer)
+            rawBytes = connection.recv(bufferSize)                          #get all of the incoming data (size of buffer)
 
-#            cleanBytes = rawBytes.split(dataEnd)                            #find the null terminator that ends the desired data in the buffer
+            cleanBytes = rawBytes.split(dataEnd)                            #find the null terminator that ends the desired data in the buffer
 
-#            strData = cleanBytes[dataIndex].decode("utf-8")                 #decode the string type and keep whatever is in front of the null terminator
+            strData = cleanBytes[dataIndex].decode("utf-8")                 #decode the string type and keep whatever is in front of the null terminator
             
-#            data = strData.split(delimiter)
+            data = strData.split(delimiter)
 
-#            acctName = data[nameIndex]                                      #set new vars
-#            acctBalance = data[balanceIndex]
-#            acctFoundStatus = int(data[foundStatusIndex])
-#            acctBalanceStatus = int(data[balanceStatusIndex])
+            #Code to test w/o validator, comment out all socket code 
+#            strData = ["Venkat,34.0,1,1", "Venkat,34.0,0,1", "Venkat,34.0,1,0", "Venkat,34.0,1,1"]	            
 
-            strData = ["Venkat,34.0,1,1", "Venkat,34.0,0,1", "Venkat,34.0,1,0", "Venkat,34.0,1,1"]	            
-
-            data = strData[i].split(delimiter)                              #split data into vars	
-            i = i + 1	
-            if(i >= 4):	
-                i = 0
-
+#            data = strData[i].split(delimiter)                      
+#            i = i + 1	
+#            if(i >= 4):	
+#                i = 0
 
             acctName = data[nameIndex]	
             acctBalance = data[balanceIndex]
@@ -138,21 +135,12 @@ def main():
             if(not acctFoundStatus):
                 invalidImg = tkr.PhotoImage(file = 'XSmall.png' if smallScreen else 'X.png')
 
-                #X image
+                #status image
                 canvasInvalidImg = canvas.create_image(
                     (invalidImg.width() / 4), 
                     (screenHeight - (invalidImg.height() + (invalidImg.height() / 4))), 
                     image = invalidImg, 
                     anchor = 'nw') 
-
-                #Acct Info text
-                canvasNotFoundText = canvas.create_text(
-                    (screenWidth / 2) + (screenWidth / 20), 
-                    (screenHeight / 3) + (screenHeight / 10),
-                    fill = "black", 
-                    font = "Times 20" if smallScreen else "Times 40",
-                    text = "Your account was not found", 
-                    anchor = 'nw')
 
                 #Status text
                 canvasDeniedText = canvas.create_text(
@@ -162,17 +150,34 @@ def main():
                     font = "Times 20" if smallScreen else "Times 40", 
                     text = "ACCESS DENIED", 
                     anchor = 'nw')
-                
 
+                #Acct Info text
+                canvasNotFoundText = canvas.create_text(
+                    (screenWidth / 2) + (screenWidth / 20), 
+                    (screenHeight / 3) + (screenHeight / 10),
+                    fill = "black", 
+                    font = "Times 20" if smallScreen else "Times 40",
+                    text = "Your account was not found", 
+                    anchor = 'nw')  
+                
             elif(not acctBalanceStatus):
                 invalidImg = tkr.PhotoImage(file = 'XSmall.png' if smallScreen else 'X.png')
 
-                #X Image
+                #status Image
                 canvasInvalidImg = canvas.create_image(
                     (invalidImg.width() / 4), 
                     (screenHeight - (invalidImg.height() + (invalidImg.height() / 4))), 
                     image = invalidImg, 
                     anchor = 'nw') 
+
+                #status text
+                canvasDeniedText = canvas.create_text(
+                    ((invalidImg.width() / 4) + (invalidImg.width() / 20)), 
+                    ((screenHeight * 3) / 8), 
+                    fill = "red", 
+                    font = "Times 20" if smallScreen else "Times 40", 
+                    text = "ACCESS DENIED", 
+                    anchor = 'nw')
 
                 #Acct Info text
                 canvasNoBalanceText = canvas.create_text(
@@ -186,24 +191,24 @@ def main():
                         + "to purchase a ticket.", 
                     anchor = 'nw')
 
-                #status text
-                canvasDeniedText = canvas.create_text(
-                    ((invalidImg.width() / 4) + (invalidImg.width() / 20)), 
-                    ((screenHeight * 3) / 8), 
-                    fill = "red", 
-                    font = "Times 20" if smallScreen else "Times 40", 
-                    text = "ACCESS DENIED", 
-                    anchor = 'nw')
-
             else:
                 validImg = tkr.PhotoImage(file = 'checkSmall.png' if smallScreen else 'check.png')
 
-                #check image
+                #status image
                 canvasValidImg = canvas.create_image(
                     (validImg.width() / 4), 
                     (screenHeight - (validImg.height() + (validImg.height() / 4))), 
                     image = validImg, 
                     anchor = 'nw') 
+
+                #status text
+                canvasAcceptedText = canvas.create_text(
+                    ((validImg.width() / 4) + (validImg.width() / 20)), 
+                    ((screenHeight * 3) / 8),
+                    fill = "green", 
+                    font = "Times 20" if smallScreen else "Times 40", 
+                    text = "ACCESS GRANTED", 
+                    anchor = 'nw')
 
                 ##acct info text
                 canvasWelcomeText = canvas.create_text(
@@ -215,20 +220,9 @@ def main():
                         + acctBalance + ".\nEnjoy your trip.", 
                     anchor = 'nw')
 
-                #status text
-                canvasAcceptedText = canvas.create_text(
-                    ((validImg.width() / 4) + (validImg.width() / 20)), 
-                    ((screenHeight * 3) / 8),
-                    fill = "green", 
-                    font = "Times 20" if smallScreen else "Times 40", 
-                    text = "ACCESS GRANTED", 
-                    anchor = 'nw')
-
-
             tk.update_idletasks()
             tk.update()
-            Timer(guiScreenDelay)
-            
+            Timer(guiScreenDelay)                                   #TODO: make dynamic, different delay times for different screens NF: 1s NB: 3s A: 3s
 
             if(not acctFoundStatus):
                 canvas.delete(canvasInvalidImg)
@@ -243,17 +237,8 @@ def main():
                 canvas.delete(canvasWelcomeText)
                 canvas.delete(canvasAcceptedText)
 
-            #delays to keep screen displayed
-            #will catch up if a new beacon arrives will still displaying 
-            #as long as there is enough space in buffer
-            #TODO: should open gate after GUI display completes
-            #maybe find a better way to keep screen up using GUI library
-            #TODO: make different delay times for different screens NF: 1s NB: 3s A: 3s
-            
-
         finally:
-            print("close")
-            #connection.close()                                              #close connection
+            connection.close()                                              #close connection
 
 
 def Timer(milliseconds):
