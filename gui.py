@@ -50,42 +50,86 @@ def main():
     tk.attributes('-fullscreen', True)
 
 #   CANVAS INIT
-    canvas = tkr.Canvas(tk, width = screenWidth, height = screenHeight, bg = 'white')
+    canvas = tkr.Canvas(
+        tk, 
+        width = screenWidth, 
+        height = screenHeight, 
+        bg = 'white')
+
     canvas.grid()
 
 #   CANVAS IMG
     cubicImg = tkr.PhotoImage(file = 'cubicImgSmall.png' if smallScreen else 'cubicImg.png')
-    canvasCubicImg = canvas.create_image((screenWidth - cubicImg.width()), (screenHeight - cubicImg.height()), image=cubicImg, anchor='nw')
+
+    canvasCubicImg = canvas.create_image(
+        (screenWidth - cubicImg.width()), 
+        (screenHeight - cubicImg.height()), 
+        image = cubicImg, 
+        anchor = 'nw')
 
 #   CANVAS TEXT
-    canvasTitleText = canvas.create_text((screenWidth / 8), 10, fill = "darkblue", font = "Times 50" if smallScreen else "Times 100", text = "San Diego Metro Station", anchor='nw')
-    canvasAcctInfoRect = canvas.create_rectangle((screenWidth / 2), (screenHeight / 4), (screenWidth - 10), (screenHeight - cubicImg.height()), outline = "darkblue", width = 7)
-    canvasAcctInfoText = canvas.create_text((screenWidth / 2) + 50, 230, fill = "darkblue", font = "Times 60", text = "Account Information:", anchor='nw')
+    canvasTitleText = canvas.create_text(
+        (screenWidth / 8), 
+        10, 
+        fill = "darkblue", 
+        font = "Times 50" if smallScreen else "Times 100", 
+        text = "San Diego Metro Station", 
+        anchor = 'nw')
+
+    canvasAcctInfoRect = canvas.create_rectangle(
+        (screenWidth / 2), 
+        (screenHeight / 4), 
+        (screenWidth - 10), 
+        (screenHeight - cubicImg.height()), 
+        outline = "darkblue", 
+        width = 7)
+
+    canvasAcctInfoText = canvas.create_text(
+        (screenWidth / 2) + (screenWidth / 20), 
+        (screenHeight / 4) + 10, 
+        fill = "darkblue", 
+        font = "Times 30" if smallScreen else "Times 60", 
+        text = "Account Information:", 
+        anchor = 'nw')
 
 #   TKINTER UPDATE
     tk.update_idletasks()
     tk.update()
-    i = 0
+    i=0
+
     while True: 
         tk.update_idletasks()
         tk.update()
         Timer(500)
 
-        connection, clientAddress = guiSocket.accept()	                    #connection made with client (val)
+#        connection, clientAddress = guiSocket.accept()	                    #connection made with client (val)
         
         try:
             #Incoming data in order: "<Acct Name>, <Acct Balance>, <Acct Found Status>, <Acct Balance Status>"
             #-----------------------------------------------------------------------------------------------#
 
-            rawBytes = connection.recv(bufferSize)                          #get all of the incoming data (size of buffer)
+#            rawBytes = connection.recv(bufferSize)                          #get all of the incoming data (size of buffer)
 
-            cleanBytes = rawBytes.split(dataEnd)                            #find the null terminator that ends the desired data in the buffer
+#            cleanBytes = rawBytes.split(dataEnd)                            #find the null terminator that ends the desired data in the buffer
 
-            strData = cleanBytes[dataIndex].decode("utf-8")                 #decode the string type and keep whatever is in front of the null terminator
+#            strData = cleanBytes[dataIndex].decode("utf-8")                 #decode the string type and keep whatever is in front of the null terminator
             
-            data = strData.split(delimiter)
+#            data = strData.split(delimiter)
 
-            acctName = data[nameIndex]                                      #set new vars
+#            acctName = data[nameIndex]                                      #set new vars
+#            acctBalance = data[balanceIndex]
+#            acctFoundStatus = int(data[foundStatusIndex])
+#            acctBalanceStatus = int(data[balanceStatusIndex])
+
+            strData = ["Venkat,34.0,1,1", "Venkat,34.0,0,1", "Venkat,34.0,1,0", "Venkat,34.0,1,1"]	            
+
+            data = strData[i].split(delimiter)                              #split data into vars	
+            i = i + 1	
+            if(i >= 4):	
+                i = 0
+
+
+            acctName = data[nameIndex]	
             acctBalance = data[balanceIndex]
             acctFoundStatus = int(data[foundStatusIndex])
             acctBalanceStatus = int(data[balanceStatusIndex])
@@ -94,45 +138,91 @@ def main():
             if(not acctFoundStatus):
                 invalidImg = tkr.PhotoImage(file = 'XSmall.png' if smallScreen else 'X.png')
 
-                canvasInvalidImg = canvas.create_image((invalidImg.width() / 4), 
+                #X image
+                canvasInvalidImg = canvas.create_image(
+                    (invalidImg.width() / 4), 
                     (screenHeight - (invalidImg.height() + (invalidImg.height() / 4))), 
-                    image=invalidImg, anchor = 'nw') 
+                    image = invalidImg, 
+                    anchor = 'nw') 
 
-                canvasNotFoundText = canvas.create_text((screenWidth / 2) + 90, 330, 
-                    fill = "black", font = "Times 40", text = "Your account was not found", anchor = 'nw')
+                #Acct Info text
+                canvasNotFoundText = canvas.create_text(
+                    (screenWidth / 2) + (screenWidth / 20), 
+                    (screenHeight / 3) + (screenHeight / 10),
+                    fill = "black", 
+                    font = "Times 20" if smallScreen else "Times 40",
+                    text = "Your account was not found", 
+                    anchor = 'nw')
 
-                canvasDeniedText = canvas.create_text((invalidImg.width() / 4) + 30, 300, 
-                    fill = "red", font = "Times 40", text = "ACCESS DENIED", anchor = 'nw')
+                #Status text
+                canvasDeniedText = canvas.create_text(
+                    ((invalidImg.width() / 4) + (invalidImg.width() / 20)), 
+                    ((screenHeight * 3) / 8), 
+                    fill = "red", 
+                    font = "Times 20" if smallScreen else "Times 40", 
+                    text = "ACCESS DENIED", 
+                    anchor = 'nw')
                 
 
             elif(not acctBalanceStatus):
                 invalidImg = tkr.PhotoImage(file = 'XSmall.png' if smallScreen else 'X.png')
 
-                canvasInvalidImg = canvas.create_image((invalidImg.width() / 4), 
+                #X Image
+                canvasInvalidImg = canvas.create_image(
+                    (invalidImg.width() / 4), 
                     (screenHeight - (invalidImg.height() + (invalidImg.height() / 4))), 
-                    image=invalidImg, anchor='nw') 
+                    image = invalidImg, 
+                    anchor = 'nw') 
 
-                canvasNoBalanceText = canvas.create_text((screenWidth / 2) + 90, 330, 
-                    fill = "black", font = "Times 40", text = "Welcome " + acctName + ".\nYou have $" 
-                    + acctBalance + " in your account.\nYou need $" + str(ticketPrice - float(acctBalance)) 
-                    + "to purchase a ticket.", anchor = 'nw')
+                #Acct Info text
+                canvasNoBalanceText = canvas.create_text(
+                    (screenWidth / 2) + (screenWidth / 20), 
+                    (screenHeight / 3) + (screenHeight / 10), 
+                    fill = "black", 
+                    font = "Times 20" if smallScreen else "Times 40", 
+                    text = "Welcome " + acctName + ".\nYou have $" 
+                        + acctBalance + " in your account.\nYou need $" 
+                        + str(float(acctBalance) - ticketPrice) 
+                        + "to purchase a ticket.", 
+                    anchor = 'nw')
 
-                canvasDeniedText = canvas.create_text((invalidImg.width() / 4) + 30, 300, 
-                    fill = "red", font = "Times 40", text = "ACCESS DENIED", anchor = 'nw')
+                #status text
+                canvasDeniedText = canvas.create_text(
+                    ((invalidImg.width() / 4) + (invalidImg.width() / 20)), 
+                    ((screenHeight * 3) / 8), 
+                    fill = "red", 
+                    font = "Times 20" if smallScreen else "Times 40", 
+                    text = "ACCESS DENIED", 
+                    anchor = 'nw')
 
             else:
                 validImg = tkr.PhotoImage(file = 'checkSmall.png' if smallScreen else 'check.png')
 
-                canvasValidImg = canvas.create_image((validImg.width() / 4), 
+                #check image
+                canvasValidImg = canvas.create_image(
+                    (validImg.width() / 4), 
                     (screenHeight - (validImg.height() + (validImg.height() / 4))), 
-                    image=validImg, anchor='nw') 
+                    image = validImg, 
+                    anchor = 'nw') 
 
-                canvasWelcomeText = canvas.create_text((screenWidth / 2) + 90, 330, 
-                    fill = "black", font = "Times 40", text = "Welcome " + acctName + ".\nYour new balance is $" 
-                    + acctBalance + ".\nEnjoy your trip.", anchor = 'nw')
+                ##acct info text
+                canvasWelcomeText = canvas.create_text(
+                    (screenWidth / 2) + (screenWidth / 20), 
+                    (screenHeight / 3) + (screenHeight / 10), 
+                    fill = "black", 
+                    font = "Times 20" if smallScreen else "Times 40", 
+                    text = "Welcome " + acctName + ".\nYour new balance is $" 
+                        + acctBalance + ".\nEnjoy your trip.", 
+                    anchor = 'nw')
 
-                canvasAcceptedText = canvas.create_text((validImg.width() / 4) + 30, 300, 
-                    fill = "green", font = "Times 40", text = "ACCESS GRANTED", anchor = 'nw')
+                #status text
+                canvasAcceptedText = canvas.create_text(
+                    ((validImg.width() / 4) + (validImg.width() / 20)), 
+                    ((screenHeight * 3) / 8),
+                    fill = "green", 
+                    font = "Times 20" if smallScreen else "Times 40", 
+                    text = "ACCESS GRANTED", 
+                    anchor = 'nw')
 
 
             tk.update_idletasks()
@@ -162,7 +252,8 @@ def main():
             
 
         finally:
-            connection.close()                                              #close connection
+            print("close")
+            #connection.close()                                              #close connection
 
 
 def Timer(milliseconds):
