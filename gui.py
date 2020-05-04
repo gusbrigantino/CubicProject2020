@@ -4,7 +4,6 @@ import sys
 import time
 import threading
 import tkinter as tkr
-from PIL import Image
 
 #const vars 
 portNumber = 8080	
@@ -55,14 +54,11 @@ def main():
     canvas.grid()
 
 #   CANVAS IMG
-    if(smallScreen):
-        cubicImg = tkr.PhotoImage(file='cubicImgSmall.png')
-    else:
-        cubicImg = tkr.PhotoImage(file='cubicImg.png')
+    cubicImg = tkr.PhotoImage(file = 'cubicImgSmall.png' if smallScreen else 'cubicImg.png')
     canvasCubicImg = canvas.create_image((screenWidth - cubicImg.width()), (screenHeight - cubicImg.height()), image=cubicImg, anchor='nw')
 
 #   CANVAS TEXT
-    canvasTitleText = canvas.create_text((screenWidth / 8), 10, fill = "darkblue", font = "Times 100", text = "San Diego Metro Station", anchor='nw')
+    canvasTitleText = canvas.create_text((screenWidth / 8), 10, fill = "darkblue", font = "Times 50" if smallScreen else "Times 100", text = "San Diego Metro Station", anchor='nw')
     canvasAcctInfoRect = canvas.create_rectangle((screenWidth / 2), (screenHeight / 4), (screenWidth - 10), (screenHeight - cubicImg.height()), outline = "darkblue", width = 7)
     canvasAcctInfoText = canvas.create_text((screenWidth / 2) + 50, 230, fill = "darkblue", font = "Times 60", text = "Account Information:", anchor='nw')
 
@@ -96,10 +92,7 @@ def main():
 
 
             if(not acctFoundStatus):
-                if(smallScreen):
-                    invalidImg = tkr.PhotoImage(file='XSmall.png')
-                else:
-                    invalidImg = tkr.PhotoImage(file='X.png')
+                invalidImg = tkr.PhotoImage(file = 'XSmall.png' if smallScreen else 'X.png')
 
                 canvasInvalidImg = canvas.create_image((invalidImg.width() / 4), 
                     (screenHeight - (invalidImg.height() + (invalidImg.height() / 4))), 
@@ -113,10 +106,7 @@ def main():
                 
 
             elif(not acctBalanceStatus):
-                if(smallScreen):
-                    invalidImg = tkr.PhotoImage(file='XSmall.png')
-                else:
-                    invalidImg = tkr.PhotoImage(file='X.png')
+                invalidImg = tkr.PhotoImage(file = 'XSmall.png' if smallScreen else 'X.png')
 
                 canvasInvalidImg = canvas.create_image((invalidImg.width() / 4), 
                     (screenHeight - (invalidImg.height() + (invalidImg.height() / 4))), 
@@ -131,10 +121,7 @@ def main():
                     fill = "red", font = "Times 40", text = "ACCESS DENIED", anchor = 'nw')
 
             else:
-                if(smallScreen):
-                    validImg = tkr.PhotoImage(file='checkSmall.png')
-                else:
-                    validImg = tkr.PhotoImage(file='check.png')
+                validImg = tkr.PhotoImage(file = 'checkSmall.png' if smallScreen else 'check.png')
 
                 canvasValidImg = canvas.create_image((validImg.width() / 4), 
                     (screenHeight - (validImg.height() + (validImg.height() / 4))), 
