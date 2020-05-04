@@ -4,6 +4,7 @@ import sys
 import time
 import threading
 import tkinter as tkr
+from PIL import Image
 
 #const vars 
 portNumber = 8080	
@@ -36,8 +37,13 @@ def main():
 #   TKINTER INIT
     tk = tkr.Tk()
 
+    smallScreen = False
+
     screenWidth = tk.winfo_screenwidth()
     screenHeight = tk.winfo_screenheight()
+
+    if(screenWidth <= 1024):
+        smallScreen = True
 
     tk.title("San Diego Metro Station")
     tk.bind("<F11>", lambda event: tk.attributes("-fullscreen", not tk.attributes("-fullscreen")))
@@ -49,7 +55,10 @@ def main():
     canvas.grid()
 
 #   CANVAS IMG
-    cubicImg = tkr.PhotoImage(file='cubicImg.png')
+    if(smallScreen):
+        cubicImg = tkr.PhotoImage(file='cubicImgSmall.png')
+    else:
+        cubicImg = tkr.PhotoImage(file='cubicImg.png')
     canvasCubicImg = canvas.create_image((screenWidth - cubicImg.width()), (screenHeight - cubicImg.height()), image=cubicImg, anchor='nw')
 
 #   CANVAS TEXT
@@ -80,22 +89,17 @@ def main():
             
             data = strData.split(delimiter)
 
-#            strData = ["Venkat,34.0,1,1", "Venkat,34.0,0,1", "Venkat,34.0,1,0", "Venkat,34.0,1,1"]
-
-#            data = strData[i].split(delimiter)                                 #split data into vars
-#            i = i + 1
-#            if(i >= 4):
-#                i = 0
-                                                                            #set new vars
-            acctName = data[nameIndex]
+            acctName = data[nameIndex]                                      #set new vars
             acctBalance = data[balanceIndex]
             acctFoundStatus = int(data[foundStatusIndex])
             acctBalanceStatus = int(data[balanceStatusIndex])
 
 
             if(not acctFoundStatus):
-                print("NOT FOUND")
-                invalidImg = tkr.PhotoImage(file='X.png')
+                if(smallScreen):
+                    invalidImg = tkr.PhotoImage(file='XSmall.png')
+                else:
+                    invalidImg = tkr.PhotoImage(file='X.png')
 
                 canvasInvalidImg = canvas.create_image((invalidImg.width() / 4), 
                     (screenHeight - (invalidImg.height() + (invalidImg.height() / 4))), 
@@ -109,8 +113,10 @@ def main():
                 
 
             elif(not acctBalanceStatus):
-                print("NO BALANCE")
-                invalidImg = tkr.PhotoImage(file='X.png')
+                if(smallScreen):
+                    invalidImg = tkr.PhotoImage(file='XSmall.png')
+                else:
+                    invalidImg = tkr.PhotoImage(file='X.png')
 
                 canvasInvalidImg = canvas.create_image((invalidImg.width() / 4), 
                     (screenHeight - (invalidImg.height() + (invalidImg.height() / 4))), 
@@ -125,18 +131,20 @@ def main():
                     fill = "red", font = "Times 40", text = "ACCESS DENIED", anchor = 'nw')
 
             else:
-                print("ACCEPTED")
-                invalidImg = tkr.PhotoImage(file='check.png')
+                if(smallScreen):
+                    validImg = tkr.PhotoImage(file='checkSmall.png')
+                else:
+                    validImg = tkr.PhotoImage(file='check.png')
 
-                canvasValidImg = canvas.create_image((invalidImg.width() / 4), 
-                    (screenHeight - (invalidImg.height() + (invalidImg.height() / 4))), 
-                    image=invalidImg, anchor='nw') 
+                canvasValidImg = canvas.create_image((validImg.width() / 4), 
+                    (screenHeight - (validImg.height() + (validImg.height() / 4))), 
+                    image=validImg, anchor='nw') 
 
                 canvasWelcomeText = canvas.create_text((screenWidth / 2) + 90, 330, 
                     fill = "black", font = "Times 40", text = "Welcome " + acctName + ".\nYour new balance is $" 
                     + acctBalance + ".\nEnjoy your trip.", anchor = 'nw')
 
-                canvasAcceptedText = canvas.create_text((invalidImg.width() / 4) + 30, 300, 
+                canvasAcceptedText = canvas.create_text((validImg.width() / 4) + 30, 300, 
                     fill = "green", font = "Times 40", text = "ACCESS GRANTED", anchor = 'nw')
 
 
