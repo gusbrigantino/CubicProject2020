@@ -6,9 +6,13 @@ std::unordered_set<std::string> desiredAddrs;
 //Is called within valFile.cpp main 
 int InitDesiredAddrs()
 {
-    desiredAddrs.insert("04:91:62:97:8B:37");
+    desiredAddrs.insert("D2:C3:81:9B:35:B9");
+    desiredAddrs.insert("F2:02:F0:6B:77:8D");
+    desiredAddrs.insert("CF:42:45:51:60:42");
+    desiredAddrs.insert("EC:A6:17:33:83:66");
+    desiredAddrs.insert("C9:0E:DB:EA:12:02");
+
     desiredAddrs.insert("04:91:62:97:8B:38");
-    desiredAddrs.insert("04:91:62:97:8B:39");
     //more addresses can be added here
 
     return 0;

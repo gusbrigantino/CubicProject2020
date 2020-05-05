@@ -2,12 +2,11 @@
 import socket	
 import sys
 import time
-import threading
 import tkinter as tkr
 
 #const vars 
 portNumber = 8080	
-IPAddress = '127.0.0.1'
+IPAddress = '172.20.10.2'
 bufferSize = 1024
 
 smallScreenMax = 1024
@@ -25,6 +24,7 @@ delimiter = ','
 dataEnd = b'\0'
 
 guiScreenDelay = 3000                                                       #3 seconds
+guiMachineDelay = 400                                                       #4 milliseconds
 
 def main():
 
@@ -102,23 +102,23 @@ def main():
     while True: 
         tk.update_idletasks()
         tk.update()
-        Timer(500)                                                          #TODO: make dynamic
+        Timer(guiMachineDelay)                                              
 
         connection, clientAddress = guiSocket.accept()	                    #connection made with client (val)
         
         try:
             #Incoming data in order: "<Acct Name>, <Acct Balance>, <Acct Found Status>, <Acct Balance Status>"
             #-----------------------------------------------------------------------------------------------#
-
+            
             rawBytes = connection.recv(bufferSize)                          #get all of the incoming data (size of buffer)
-
+            
             cleanBytes = rawBytes.split(dataEnd)                            #find the null terminator that ends the desired data in the buffer
 
             strData = cleanBytes[dataIndex].decode("utf-8")                 #decode the string type and keep whatever is in front of the null terminator
             
             data = strData.split(delimiter)
 
-            #Code to test w/o validator, comment out all socket code 
+            #Code to test w/o validator socket, comment out all socket code 
 #            strData = ["Venkat,34.0,1,1", "Venkat,34.0,0,1", "Venkat,34.0,1,0", "Venkat,34.0,1,1"]	            
 
 #            data = strData[i].split(delimiter)                      
@@ -127,7 +127,7 @@ def main():
 #                i = 0
 
             acctName = data[nameIndex]	
-            acctBalance = data[balanceIndex]
+            acctBalance = float(data[balanceIndex])
             acctFoundStatus = int(data[foundStatusIndex])
             acctBalanceStatus = int(data[balanceStatusIndex])
 
@@ -157,7 +157,7 @@ def main():
                     (screenHeight / 3) + (screenHeight / 10),
                     fill = "black", 
                     font = "Times 20" if smallScreen else "Times 40",
-                    text = "Your account was not found", 
+                    text = "Your account was not found.", 
                     anchor = 'nw')  
                 
             elif(not acctBalanceStatus):
@@ -186,9 +186,9 @@ def main():
                     fill = "black", 
                     font = "Times 20" if smallScreen else "Times 40", 
                     text = "Welcome " + acctName + ".\nYou have $" 
-                        + acctBalance + " in your account.\nYou need $" 
-                        + str(float(acctBalance) - ticketPrice) 
-                        + "to purchase a ticket.", 
+                        + str(round(acctBalance, 3)) + "0 in your account.\nYou need $" 
+                        + str(round((ticketPrice - acctBalance), 2)) 
+                        + "0 to purchase a ticket.", 
                     anchor = 'nw')
 
             else:
@@ -210,19 +210,19 @@ def main():
                     text = "ACCESS GRANTED", 
                     anchor = 'nw')
 
-                ##acct info text
+                #acct info text
                 canvasWelcomeText = canvas.create_text(
                     (screenWidth / 2) + (screenWidth / 20), 
                     (screenHeight / 3) + (screenHeight / 10), 
                     fill = "black", 
                     font = "Times 20" if smallScreen else "Times 40", 
                     text = "Welcome " + acctName + ".\nYour new balance is $" 
-                        + acctBalance + ".\nEnjoy your trip.", 
+                        + str(round(acctBalance, 2)) + "0.\nEnjoy your trip.", 
                     anchor = 'nw')
 
             tk.update_idletasks()
             tk.update()
-            Timer(guiScreenDelay)                                   #TODO: make dynamic, different delay times for different screens NF: 1s NB: 3s A: 3s
+            Timer(guiScreenDelay)                                   #TODO: make dynamic, different delay times for different screens or if beacon is waiting
 
             if(not acctFoundStatus):
                 canvas.delete(canvasInvalidImg)

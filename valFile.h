@@ -25,8 +25,8 @@
 
 #define MS_PER_SEC          1000
 
-#define PROCD_WAIT_TIME     25                  //state machine clocks every 400ms ... = Xms
-                                                //max processed wait time is equivalent to X seconds
+#define PROCD_WAIT_TIME     25                  //state machine clocks every 400ms
+                                                //max processed wait time is equivalent to 10 seconds
 
 #define DB_FILE_NAME        "AcctDB.csv"
 #define NEW_DB_FILE_NAME    "newAcctDB.csv"
@@ -39,7 +39,7 @@
 
 #define PORT_NUMBER         8080
 
-#define SERVER_ADDR         "127.0.0.1"         //change this to desire IP address of server
+#define SERVER_ADDR         "127.0.0.1"         //change this to IP address of desired server
 
 #define BUFFER_SIZE         1024
 
