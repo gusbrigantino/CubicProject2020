@@ -35,6 +35,8 @@ int ValidationProcess()
 
                 if(beaconAcctNum.compare(NULL_STR) == 0)                //no beacon found
                 {
+                    UpdateRecentlyProcessedAddrs(recentlyProcessedAddrs);
+
                     machineState = BLE_ST;
                 }
                 else
@@ -274,9 +276,6 @@ int UIClient()
 
 	return 0; 
 }
-
-
-
 
 
 int Timer(int milliseconds)

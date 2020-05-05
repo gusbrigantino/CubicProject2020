@@ -70,6 +70,7 @@ int UpdateRecentlyProcessedAddrs(std::unordered_map<std::string, int> &addrMap);
 This function handles the UI client that feeds data to socket for GUI
 */
 int UIClient();
+
 /*
 This function is a simple software timer used to clock the state machine
 */

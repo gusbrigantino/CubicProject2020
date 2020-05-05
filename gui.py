@@ -6,7 +6,7 @@ import tkinter as tkr
 
 #const vars 
 portNumber = 8080	
-IPAddress = '172.20.10.2'
+IPAddress = '127.0.0.1'
 bufferSize = 1024
 
 smallScreenMax = 1024
