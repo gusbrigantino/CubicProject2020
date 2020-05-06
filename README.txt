@@ -19,6 +19,8 @@ Run GUI and Validator on different machines
         $ ping raspberrypi.local on laptop
         or
         $hostname -I
+        or 
+        $ ipconfig getifaddr en0 to get mac IP address
 2. In valFile.h change SERVER_ADDR to server IP address
 3. Make sure PORT_NUMBER in valFile.h and portNumber in gui.py are the same 
 4. On one machine run the GUI: 

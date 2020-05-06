@@ -8,10 +8,13 @@
 #include "valFile.h"
 
 Acct Account;
+std::unordered_map<std::string, int> recentlyProcessedAddrs             //map of MAC addrs and time since last process
 
 int main()
 {   
     InitDesiredAddrs();                                                 //From BLEService
+
+    InitRecentlyProcessedAddrs();
 
     ValidationProcess();
 }
@@ -19,8 +22,6 @@ int main()
 
 int ValidationProcess()
 {   
-    std::unordered_map<std::string, int> recentlyProcessedAddrs;        //map of MAC addrs and time since last process
-
     std::string beaconAcctNum;                                          //account number from beacon holder
 
     int machineState = BLE_ST;                                          //init state var of the state machine
@@ -35,30 +36,26 @@ int ValidationProcess()
 
                 if(beaconAcctNum.compare(NULL_STR) == 0)                //no beacon found
                 {
-                    UpdateRecentlyProcessedAddrs(recentlyProcessedAddrs);
-
+                    UpdateRecentlyProcessedAddrs();
                     machineState = BLE_ST;
                 }
                 else
                 {
-                    if(recentlyProcessedAddrs.find(beaconAcctNum) == recentlyProcessedAddrs.end())      //beacon not in recently processed state
+                    if(recentlyProcessedAddrs.find(beaconAcctNum) != recentlyProcessedAddrs.end())      //beacon not in recently processed state
                     {
-                        //Approved
-                        recentlyProcessedAddrs.insert(std::make_pair(beaconAcctNum, 0));
+                        if((recentlyProcessedAddrs.find(beaconAcctNum))->second == 0)
+                        {
+                            Account.setNumber(beaconAcctNum);    
 
-                        Account.setNumber(beaconAcctNum);               
-
-                        UpdateRecentlyProcessedAddrs(recentlyProcessedAddrs);
+                            (recentlyProcessedAddrs.find(beaconAcctNum))->second = 1;           
                         
-                        machineState = LOOKUP_ST;   
-                    }
-                    else
-                    {
-                        //processed within recent time limit
-                        
-                        UpdateRecentlyProcessedAddrs(recentlyProcessedAddrs);
-
-                        machineState = BLE_ST;
+                            machineState = LOOKUP_ST;  
+                        }
+                        else
+                        {
+                            UpdateRecentlyProcessedAddrs();
+                            machineState = BLE_ST;
+                        } 
                     }
                 }
                 break;
@@ -220,21 +217,31 @@ int UpdateDataBase()
 }
 
 
-int UpdateRecentlyProcessedAddrs(std::unordered_map<std::string, int> &addrMap)
+int UpdateRecentlyProcessedAddrs()
 {
-    std::unordered_map<std::string, int>:: iterator acctInfoItr;
+   std::unordered_map<std::string, int>:: iterator recProcAddrsItr;
     
-    for(acctInfoItr = addrMap.begin(); acctInfoItr != addrMap.end(); acctInfoItr++)         //iterate through recently processed addrs
+    for(recProcAddrsItr = recentlyProcessedAddrs.begin(); recProcAddrsItr != recentlyProcessedAddrs.end(); recProcAddrsItr++)         //iterate through recently processed addrs
     { 
-        acctInfoItr->second = (acctInfoItr->second + 1);                                    //int var in map counts how many times state machine has iterated 
+        recProcAddrsItr->second = (recProcAddrsItr->second + 1);                                    //int var in map counts how many times state machine has iterated 
 
-        if(acctInfoItr->second == PROCD_WAIT_TIME)                                          //wait period is over 
+        if(recProcAddrsItr->second == PROCD_WAIT_TIME)                                          //wait period is over 
         {
-            addrMap.erase(acctInfoItr);
+            ecProcAddrsItr->second = 0;
         }
     }
 
     return 0;
+}
+
+int InitRecentlyProcessedAddrs()
+{
+    std::unordered_set<std::string>:: iterator desiredAddrsItr;
+
+    for(desiredAddrsItr = desiredAddrs.begin(); desiredAddrsItr != desiredAddrs.end(); desiredAddrsItr++)         //iterate through recently processed addrs
+    {
+        recentlyProcessedAddrs.insert(std::make_pair(*desiredAddrsItr, 0));
+    }
 }
 
 

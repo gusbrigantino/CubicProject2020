@@ -21,7 +21,7 @@
 #define MAC_INDEX_BT        2
 #define RSSI_INDEX_BT       7
 
-#define RSSI_MIN_VAL        55
+#define RSSI_MIN_VAL        70
 
 #define NULL_STR            "\0"
 

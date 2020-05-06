@@ -64,7 +64,12 @@ int UpdateDataBase();
 This function incs counter to time when beacon was last processed 
 in attempt to stop repeating charges after initial charges
 */
-int UpdateRecentlyProcessedAddrs(std::unordered_map<std::string, int> &addrMap);
+int UpdateRecentlyProcessedAddrs();
+
+/*
+This function initializes the recently processed map of beacons
+*/
+int InitRecentlyProcessedAddrs();
 
 /*
 This function handles the UI client that feeds data to socket for GUI
