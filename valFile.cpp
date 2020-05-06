@@ -8,7 +8,7 @@
 #include "valFile.h"
 
 Acct Account;
-std::unordered_map<std::string, int> recentlyProcessedAddrs             //map of MAC addrs and time since last process
+std::unordered_map<std::string, int> recentlyProcessedAddrs;            //map of MAC addrs and time since last process
 
 int main()
 {   
@@ -227,7 +227,7 @@ int UpdateRecentlyProcessedAddrs()
 
         if(recProcAddrsItr->second == PROCD_WAIT_TIME)                                          //wait period is over 
         {
-            ecProcAddrsItr->second = 0;
+            recProcAddrsItr->second = 0;
         }
     }
 
@@ -242,6 +242,8 @@ int InitRecentlyProcessedAddrs()
     {
         recentlyProcessedAddrs.insert(std::make_pair(*desiredAddrsItr, 0));
     }
+
+    return 0;
 }
 
 
