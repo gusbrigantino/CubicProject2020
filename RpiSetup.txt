@@ -1,0 +1,29 @@
+Rpi Setup Steps
+
+Working from your laptop
+Download the Balena Etcher application on your laptop
+https://www.balena.io/etcher/
+Download a zip file of the Raspbian Buster with desktop and recommended software
+https://www.raspberrypi.org/downloads/raspbian/
+Insert your blank micro sd card into your computer (you may need an adapter)
+Open the Balena Etcher application  
+For image you want the Raspbian zip file just downloaded 
+For target you want your micro sd card (should connect automatically)
+Then flash, this will take a while 
+Once that is finished, insert the sd card into the powered off rpi 
+Then power on your rpi 
+
+
+Working from your Raspberry Pi
+Next you are going to want the latest version of gcc to compile all c/c++ code
+Follow the instructions on this website to do so
+https://solarianprogrammer.com/2017/12/08/raspberry-pi-raspbian-install-gcc-compile-cpp-17-programs/
+To compile C/C++ code:
+g++ -std=c++17 -Wall -pedantic -o exampleFile exampleFile.c
+To run:
+./exampleFile
+If you want to download python3 since the GUI may be in python, enter the following commands
+https://medium.com/@isma3il/install-python-3-6-or-3-7-and-pip-on-raspberry-pi-85e657aadb1e
+Change file names to latest version
+Change all mentions of 3.6.5 or whatever to 3.8.2 or latest version  
+
