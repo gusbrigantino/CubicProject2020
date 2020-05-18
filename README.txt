@@ -58,20 +58,8 @@ Run GUI and Validator on different machines
 
 
 Things left undone:
-1. Within BLEService.cpp, I think it would be beneficial to store valid beacon address and rssi and scan twice more,
-    only taking another 800ms, to ensure this is the closest beacon, then pass to valFile.cpp. This would slow the proccess down.
+1. Within BLEService.cpp, I think it would be beneficial to store valid beacon address and rssi and scan twice more, only taking another 800ms, to ensure this is the closest beacon, then pass to valFile.cpp. This would slow the proccess down.
     
-2. Within valFile.cpp, there are functions called InitRecentlyProcessedAddrs() and UpdateRecentlyProcessedAddrs(). These serve 
-    to block a beacon from being processed for a cetain amount of time (PROCD_WAIT_TIME), after its initial process. This handles
-    the situation that may occur if a patron enters through the gate but remains within range of the validator. This was actually 
-    another very crucial problem that was not discussed within the scope of the project. Therefore I had to come up with a quick solution.
-    I used an unordered_map to store the MAC addresses of recently processed beacons which mapped to the number of iterations of the state
-    machine since its process. I believe there is a better solution to this because occasionally this results in a segmentation fault.
-    So if a segmentation fault ever occurs while running this program look to UpdateRecentlyProcessedAddrs().
+2. Within valFile.cpp, there are functions called InitRecentlyProcessedAddrs() and UpdateRecentlyProcessedAddrs(). These serve to block a beacon from being processed for a cetain amount of time (PROCD_WAIT_TIME), after its initial process. This handles the situation that may occur if a patron enters through the gate but remains within range of the validator. This was actually another very crucial problem that was not discussed within the scope of the project. Therefore I had to come up with a quick solution. I used an unordered_map to store the MAC addresses of recently processed beacons which mapped to the number of iterations of the state machine since its process. I believe there is a better solution to this because occasionally this results in a segmentation fault. So if a segmentation fault ever occurs while running this program look to UpdateRecentlyProcessedAddrs().
 
-3. Within gui.py, there are two things that I wish were better. One is the scalability of the images and texts used to create the 
-    interface. Currently the GUI only supports two options, either displaying on a screen the size of a normal computer or on a screen
-    about half of that size, which the program will decide on its own based on the size of the screen. I would like for the GUI to be 
-    scalable to all screens sizes and have the GUI dynamically modify fonts and image sizes. Secondly, I would like to have timed the
-    GUI dynamically. Meaning different times eloted while different screens were displayed. And even checking to see of there is a waiting 
-    request for connection from valFile.cpp and the shortening the time for all.
+3. Within gui.py, there are two things that I wish were better. One is the scalability of the images and texts used to create the interface. Currently the GUI only supports two options, either displaying on a screen the size of a normal computer or on a screen about half of that size, which the program will decide on its own based on the size of the screen. I would like for the GUI to be scalable to all screens sizes and have the GUI dynamically modify fonts and image sizes. Secondly, I would like to have timed the GUI dynamically. Meaning different times eloted while different screens were displayed. And even checking to see of there is a waiting request for connection from valFile.cpp and the shortening the time for all.
