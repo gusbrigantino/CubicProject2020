@@ -28,6 +28,8 @@
 #define LESCAN              "sudo timeout -s INT 0.25s hcitool lescan"
 #define BTMGMT_FIND         "sudo timeout -s INT 0.25s btmgmt find"
 
+#define DEV_FOUND_STR      "dev_found:"
+
 //Global Var used in both valFile.cpp and BLEService.cpp
 extern std::unordered_set<std::string> desiredAddrs;
 

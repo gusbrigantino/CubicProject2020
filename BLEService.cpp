@@ -76,12 +76,12 @@ int ParseBtmgmtFind(std::string terminalOutput, std::unordered_map<std::string, 
             std::string tokenHolder;
             std::vector<std::string> line;                      //vector for tokens within each line
 
-            while(getline(tokenStream, tokenHolder, ' '))       //would like to break if [1] not "dev_found" instead of tokenizing whole string no matter what
+            while(getline(tokenStream, tokenHolder, ' '))       //would like to break if [1] not "dev_found:" instead of tokenizing whole string no matter what
             {
                 line.push_back(tokenHolder);
             }
             
-            if(line[1].compare("dev_found:") == 0)              //if equal meaning correct line with the info
+            if(line[1].compare(DEV_FOUND_STR) == 0)              //if equal meaning correct line with the info
             {
                 devAddr = line[MAC_INDEX_BT];                   //addr index in cmd line output
                 devRssi = line[RSSI_INDEX_BT];                  //rssi index in cmd line output

@@ -107,7 +107,7 @@ def main():
         tk.update()
         Timer(guiMachineDelay)                                              #not sure if necessary because program will wait for connection from client                                           
 
-#        connection, clientAddress = guiSocket.accept()	                    #connection made with client (val)
+        connection, clientAddress = guiSocket.accept()	                    #connection made with client (val)
         
         try:
             #Incoming data in order: "<Acct Name>, <Acct Balance>, <Acct Found Status>, <Acct Balance Status>"

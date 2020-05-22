@@ -82,8 +82,8 @@ int ValidationProcess()
                 machineState = UI_ST;
                 break;
 
-            case UI_ST:                                                 //simple ui to output line for now     
-
+            case UI_ST:                                                 
+            
                 UIClient();
 
                 machineState = BLE_ST;
@@ -239,9 +239,9 @@ int InitRecentlyProcessedAddrs()
 {
     std::unordered_set<std::string>:: iterator desiredAddrsItr;
 
-    for(desiredAddrsItr = desiredAddrs.begin(); desiredAddrsItr != desiredAddrs.end(); desiredAddrsItr++)         //iterate through recently processed addrs
+    for(desiredAddrsItr = desiredAddrs.begin(); desiredAddrsItr != desiredAddrs.end(); desiredAddrsItr++)         //iterate through desired addrs
     {
-        recentlyProcessedAddrs.insert(std::make_pair(*desiredAddrsItr, 0));                                       //gets addrs from desired addrs 
+        recentlyProcessedAddrs.insert(std::make_pair(*desiredAddrsItr, 0));                                       //adds addrs from desired addrs to recently processed addrs
     }
 
     return 0;
