@@ -1,0 +1,12 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/CubicProject2020/v16/.suo
+/.vs/ProjectSettings.json
+/.vs/VSWorkspaceState.json
+/.vs/slnx.sqlite
+/.vs/CubicProject2020/v16/Browse.VC.db
+/.vs/CubicProject2020/v16/Browse.VC.db-shm
+/.vs/CubicProject2020/v16/Browse.VC.db-wal
+/.vs/CubicProject2020/v16/Browse.VC.opendb

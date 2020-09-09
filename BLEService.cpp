@@ -1,4 +1,5 @@
 #include "BLEService.h"
+//TEST
 
 //set of predefined MAC addrs valid for processing
 std::unordered_set<std::string> desiredAddrs; 
